@@ -6,7 +6,7 @@
     "start": "webpack && webpack-dev-server --mode development",
     "build": "webpack"
   },
-  "author": "Santiago Garcia, Daniel Ayala",
+  "author": "Santiago Garcia, Daniel Ayala, Luis Caro",
   "license": "MIT",
   "description": "FSI Workshop for a Chatbot based Generative AI Multi Agent Solution on AWS",
   "dependencies": {
