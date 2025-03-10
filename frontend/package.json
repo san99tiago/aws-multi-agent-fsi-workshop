@@ -1,0 +1,23 @@
+{
+  "name": "aws-fsi-workshop",
+  "version": "1.0.0",
+  "main": "webpack.config.js",
+  "scripts": {
+    "start": "webpack && webpack-dev-server --mode development",
+    "build": "webpack"
+  },
+  "author": "Santiago Garcia, Daniel Ayala",
+  "license": "MIT",
+  "description": "FSI Workshop for a Chatbot based Generative AI Multi Agent Solution on AWS",
+  "dependencies": {
+    "aws-amplify": "^5.3.5"
+  },
+  "devDependencies": {
+    "copy-webpack-plugin": "^11.0.0",
+    "css-loader": "^6.8.1",
+    "style-loader": "^3.3.3",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
+  }
+}

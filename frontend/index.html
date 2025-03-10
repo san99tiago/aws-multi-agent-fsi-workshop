@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <title>WhatsApp Chatbot Demo</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body class="bg-gradient-to-b from-white via-white via-[60%] to-sky-300 flex flex-col min-h-screen min-w-screen ">
+<nav>
+  <div class="flex p-2 items-center justify-between glass-ns w-full">
+    <div class="flex items-center">
+      <img src="images/logo.png" alt="Logo" class="h-20">
+      <div>
+        <h1 class="text-2xl font-bold text-slate-900 font-semibold">WhatsApp Chatbot Demo</h1>
+        <h1 class="text-md font-bold text-slate-800 font-normal">Build FSI Multi Agents with Bedrock</h1>
+      </div>
+    </div>
+    <div class="flex items-center mr-6">
+      <button id="openModalBtn" class="hidden px-4 py-2 bg-sky-500 text-white rounded-md hover:bg-sky-600 focus:outline-none focus:ring-2 focus:ring-sky-600 focus:ring-opacity-50">
+        About the demo <i class="fa-solid fa-circle-question p-1" ></i>
+      </button>
+      <button id="logout-btn" class="hidden px-4 py-2 ml-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-opacity-50">
+        <i class="fa-solid fa-power-off"></i>
+      </button>
+    </div>
+  </div>
+</nav>
+<div id="login-container" class="flex justify-center items-center absolute inset-0">
+  <div class="flex items-center justify-center z-50">
+    <div class="text-white p-6 rounded-3xl shadow-lg border border-gray-200 max-w-md w-full">
+      <div class="flex flex-col items-center">
+        <img class="h-48 mb-4" src="images/logo.png" alt="Logo">
+        <button class="px-4 py-2 bg-sky-500 text-white rounded-3xl hover:bg-sky-600 focus:outline-none focus:ring-2 focus:ring-sky-600 focus:ring-opacity-50" id="login-btn">Log In</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="application-container" class="flex justify-center p-8 hidden text-slate-800 flex-col">
+  <div id="image-upload-container" class="flex flex-row w-full h-full" >
+    <div class="flex flex-col w-full rounded-lg shadow-lg border border-gray-200 bg-white overflow-hidden">
+      <div class="p-6 mb-4">
+        <h2 class="text-2xl text-slate-900 font-semibold mb-6">Chatbot</h2>
+        <div class="flex flex-col h-96 overflow-y-auto mb-4 space-y-4 rounded-lg bg-gray-100 p-4 " id="messageContainer">
+          <!-- Chat messages will be rendered here -->
+        </div>
+        <div class="flex">
+          <input
+                  type="text"
+                  id="messageInput"
+                  class="flex-grow border border-gray-300 rounded-l-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Type your message..."
+          />
+          <button
+                  id="sendButton"
+                  class="bg-sky-500 hover:bg-blue-600 text-white rounded-r-md px-4 py-2"
+          >
+            Send
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="main.bundle.js"></script>
+  <script src="https://kit.fontawesome.com/41f876a31c.js" crossorigin="anonymous"></script>
+</body>
+</html>
