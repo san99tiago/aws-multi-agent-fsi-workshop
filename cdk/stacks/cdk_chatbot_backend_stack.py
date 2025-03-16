@@ -14,6 +14,7 @@ from aws_cdk import (
     aws_s3_deployment as s3d,
     aws_apigateway as aws_apigw,
     custom_resources as cr,
+    CustomResource,
     CfnOutput,
     RemovalPolicy,
     Stack,
@@ -60,6 +61,7 @@ class ChatbotBackendStack(Stack):
         self.create_bedrock_child_agents()
         self.create_rest_api()
         self.configure_rest_api()
+        self.load_data_custom_resource()
 
         # Generate CloudFormation outputs
         self.generate_cloudformation_outputs()
@@ -90,14 +92,12 @@ class ChatbotBackendStack(Stack):
         self.bucket_additional_assets = aws_s3.Bucket(
             self,
             "S3-Bucket-ExtraAssets",
-            bucket_name=f"{self.main_resources_name}-extra-assets-{self.account}",
+            # # Intentionally leave as random name to avoid duplicates in Workshops...
+            # bucket_name=f"{self.main_resources_name}-extra-assets-{self.account}",
             removal_policy=RemovalPolicy.DESTROY,
             auto_delete_objects=True,
             enforce_ssl=True,
             block_public_access=aws_s3.BlockPublicAccess.BLOCK_ALL,
-        )
-        Tags.of(self.bucket_additional_assets).add(
-            "Name", f"{self.main_resources_name}-extra-assets-{self.account}"
         )
 
     def create_lambda_layers(self) -> None:
@@ -621,6 +621,51 @@ class ChatbotBackendStack(Stack):
 
         # API-Path: "/api/v1/docs/openapi.json
         root_resource_docs_proxy.add_method("GET", api_lambda_integration_chatbot)
+
+    def load_data_custom_resource(self) -> None:
+        """
+        Method to load the data from the custom resource.
+        """
+
+        PATH_TO_CUSTOM_RESOURCES = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
+            "custom_resource",
+        )
+
+        lambda_custom_resource_load_data = aws_lambda.Function(
+            self,
+            "Lambda-LoadData",
+            runtime=aws_lambda.Runtime.PYTHON_3_10,
+            handler="load_data.handler",
+            code=aws_lambda.Code.from_asset(PATH_TO_CUSTOM_RESOURCES),
+            timeout=Duration.seconds(30),
+            memory_size=128,
+            environment={
+                "LOG_LEVEL": "DEBUG",
+                "DYNAMODB_TABLE_NAME": self.dynamodb_table.table_name,
+            },
+        )
+        lambda_custom_resource_load_data.role.add_managed_policy(
+            aws_iam.ManagedPolicy.from_aws_managed_policy_name(
+                "AmazonDynamoDBFullAccess"
+            )
+        )
+
+        provider = cr.Provider(
+            scope=self,
+            id=f"Provider-LoadData-{self.agents_version}",
+            on_event_handler=lambda_custom_resource_load_data,
+        )
+
+        custom_resource = CustomResource(
+            self,
+            f"CustomLoadData-{self.agents_version}",
+            service_token=provider.service_token,
+            removal_policy=RemovalPolicy.DESTROY,
+            resource_type="Custom::LoadData",
+        )
+
+        custom_resource.node.add_dependency(self.dynamodb_table)
 
     def generate_cloudformation_outputs(self) -> None:
         """
