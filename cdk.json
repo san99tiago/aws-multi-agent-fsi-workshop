@@ -1,0 +1,25 @@
+{
+  "app": "make clean && make install && python3 cdk/app.py",
+  "context": {
+    "tags": {
+      "Owner": "Santiago Garcia, Daniel Ayala",
+      "Source": "https://github.com/san99tiago/aws-multi-agent-fsi-workshop",
+      "Usage": "FSI Workshop for a Chatbot based Generative AI Multi Agent Solution on AWS"
+    },
+    "app_config": {
+      "prod": {
+        "main_resources_name": "fsi-multi-agents",
+        "base_bank": "RufusBank",
+        "bot_name": "Ruffy",
+        "deployment_environment": "prod",
+        "log_level": "DEBUG",
+        "table_name": "fsi-chatbot-history-prod",
+        "api_gw_name": "api-fsi-chatbot",
+        "agents_data_table_name": "fsi-chatbot-agents-data-prod",
+        "comment_1": "IMPORTANT: Bedrock Agents APIs are new. When doing major changes please intentionally switch the version to enforce recreation. Example: v0 to v1",
+        "agents_version": "v1",
+        "bedrock_llm_model_id": "amazon.nova-pro-v1:0"
+      }
+    }
+  }
+}

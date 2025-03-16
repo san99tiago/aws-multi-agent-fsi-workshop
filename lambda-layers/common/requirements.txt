@@ -1,0 +1,11 @@
+fastapi==0.99.0
+# fastapi==0.115.6
+mangum==0.17.0
+# pydantic==2.10.5
+pydantic
+pydantic_core
+requests==2.32.3
+fpdf2==2.8.2
+qrcode==8.0
+# Pillow==11.1.0 # Used a custom layer instead...
+pytz==2025.1

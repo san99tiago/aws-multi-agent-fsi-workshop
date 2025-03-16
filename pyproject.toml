@@ -5,7 +5,7 @@ description = "FSI Multi-Agent FSI Workshop on AWS"
 authors = [
     "Santiago Garcia Arango <santigrc@amazon.com>",
     "Daniel Ayala Marin <daniayma@amazon.com>",
-    "Luis Caro <luiscaro@amazon.com",
+    "Luis Caro <luiscaro@amazon.com>",
 ]
 license = "Apache"
 readme = "README.md"
