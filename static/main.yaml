@@ -1,0 +1,196 @@
+Parameters:
+  ZipFileWithAssets:
+    Type: String
+    Default: all_content.zip
+  ParticipantRoleName:
+    Description: optional - use only during AWS Event in Workshop Studio
+    Type: String
+    Default: "" # WSParticipantRole
+  ParticipantRoleArn:
+    Description: optional - use only during AWS Event in Workshop Studio
+    Type: String
+    Default: "" # arn:aws:iam::123456123456:role/WSParticipantRole
+  ParticipantAssumedRoleSessionName:
+    Description: optional - use only during AWS Event in Workshop Studio
+    Type: String
+    Default: "" # Participant
+  ParticipantAssumedRoleArn:
+    Description: optional - use only during AWS Event in Workshop Studio
+    Type: String
+    Default: "" # arn:aws:sts::123456123456:assumed-role/WSParticipantRole/Participant
+  AssetsBucketName:
+    Description: optional - use only during AWS Event in Workshop Studio
+    Type: String
+    Default: "" # ws-event-2009c59b-6c7-us-east-1
+  AssetsBucketPrefix:
+    Description: optional - use only during AWS Event in Workshop Studio
+    Type: String
+    Default: "" # 371c6734-2735-4958-8749-4f4db058a75f/assets/
+  EC2KeyPairName:
+    Description: optional - use only during AWS Event in Workshop Studio
+    Type: String
+    Default: "" # ws-default-keypair
+  LatestAmiId :
+    Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
+    Default: '/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64'
+
+Resources:
+  WaitHandle:
+    Type: AWS::CloudFormation::WaitConditionHandle
+
+  WaitCondition:
+    Type: AWS::CloudFormation::WaitCondition
+    DependsOn: Instance
+    Properties:
+      Handle: !Ref WaitHandle
+      Timeout: '1800' # fully deployment must finish within 30min, otherwise it is marked as failed for Workshop Studio
+      Count: 1
+
+  Role:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AdministratorAccess
+
+  InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: "/"
+      Roles:
+        - !Ref Role
+
+  Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t3.medium
+      ImageId: !Ref LatestAmiId
+      IamInstanceProfile: !Ref InstanceProfile
+      InstanceInitiatedShutdownBehavior: terminate
+      UserData:
+        Fn::Base64:
+          !Sub |
+            #!/usr/bin/env bash
+
+            # do not set errexit here - we need to fail-through to trigger the WaitHandle correctly
+            set -o xtrace
+
+            sleep 30
+
+            yum install -y amazon-cloudwatch-agent
+
+            LOGS_CONFIG=amazon-cloudwatch-agent.json
+            tee -a > ${!LOGS_CONFIG} <<EOF
+            {
+              "agent": {
+                "run_as_user": "root"
+              },
+              "logs": {
+                "logs_collected": {
+                  "files": {
+                    "collect_list": [
+                      {
+                        "file_path": "/var/log/cloud-init-output.log",
+                        "log_group_name": "cloud-init-output.log"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+            EOF
+            /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:${!LOGS_CONFIG}
+
+            # --------------------------------------------- << Added by Santi (START)
+            # Added commands for the CDK setup...
+            # Create workshop folder inside AMI
+            echo "Create workshop folder inside AMI"
+            cd /home/
+            mkdir -p workshop
+            cd /home/workshop
+            pwd
+
+            # Install NodeJS
+            echo "Install NodeJS"
+            sudo dnf update -y
+            sudo dnf install -y nodejs
+
+            # Install CDK CLI
+            echo "Install CDK"
+            npm install -g aws-cdk
+
+            # Install Angular CLI
+            echo "Install Angular CLI"
+            npm install -g @angular/cli
+            ng completion
+
+            # Install Make
+            echo "Install Make"
+            yum install -y make
+
+
+            # Download content from S3 bucket (CDK content source files)
+            # Important: the "AssetsBucketName" and "AssetsBucketPrefix" must be set...
+            echo "Download content from S3 bucket (CDK content source files)"
+            aws s3api get-object \
+                --bucket "${AssetsBucketName}" \
+                --key "${AssetsBucketPrefix}all_content.zip" \
+                "/home/workshop/all_content.zip"
+
+            unzip /home/workshop/all_content.zip -d /home/workshop/
+
+
+            # Activate Python3 virtual environment
+            echo "Activate Python3 virtual environment"
+            python3 -m venv .venv
+            source .venv/bin/activate
+
+            # Install poetry
+            pip install poetry
+
+            # Install Python dependencies for CDK Deploy
+            poetry install
+
+            # Deploy CDK solution
+            echo "Deploy CDK solution"
+            cdk bootstrap
+            export DEPLOYMENT_ENVIRONMENT=prod
+            export AWS_DEFAULT_REGION=us-east-1
+            cdk deploy --require-approval never --all
+
+            # --------------------------------------------- << Added by Santi (END)
+
+            code=$?
+
+            if [[ $code == 0 ]]; then
+              status="SUCCESS"
+            else
+              status="FAILURE"
+            fi
+
+            uid=$(uuidgen)
+
+            set +o errexit
+            read -r -d '' payload <<EOF
+              {"Status":"${!status}","UniqueId":"${!uid}","Data":"CDK Finished OK.","Reason":"Exit code: ${!code}"}
+            EOF
+            set -o errexit
+
+            curl \
+              --silent -v \
+              -X PUT \
+              -H 'Content-Type:' \
+              --data-binary "${!payload}" \
+              "${WaitHandle}"
+
+            # Give 10 mins to send extra logs and troubleshoot if needed
+            shutdown +10
