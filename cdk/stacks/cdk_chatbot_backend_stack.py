@@ -288,11 +288,11 @@ class ChatbotBackendStack(Stack):
 
         1. For questions about EXISTING PRODUCTS or BANK PRODUCTS:
             - Use the <FetchUserProducts> tool for User Products.
-            - Obtain the 'from_number' from the user's input, if found.
+            - Obtain the 'from_number' from the user's input.
 
         2. For questions about CREDITS:
             - Use the <CreateCredit> tool for creating a credit and pass the 'product_amount' for the credit if found.
-            - Obtain the 'from_number' from the user's input, if found.
+            - Obtain the 'from_number' from the user's input.
         """
         self.bedrock_agent_1 = aws_bedrock.CfnAgent(
             self,
@@ -320,7 +320,7 @@ class ChatbotBackendStack(Stack):
                                     "from_number": aws_bedrock.CfnAgent.ParameterDetailProperty(
                                         type="string",
                                         description="from_number to fetch the user products",
-                                        required=False,
+                                        required=True,
                                     ),
                                 },
                             )
@@ -343,12 +343,12 @@ class ChatbotBackendStack(Stack):
                                     "from_number": aws_bedrock.CfnAgent.ParameterDetailProperty(
                                         type="string",
                                         description="from_number to create the credit",
-                                        required=False,
+                                        required=True,
                                     ),
                                     "product_amount": aws_bedrock.CfnAgent.ParameterDetailProperty(
                                         type="string",
                                         description="product_amount to create the credit",
-                                        required=False,
+                                        required=True,
                                     ),
                                 },
                             )
@@ -366,7 +366,7 @@ class ChatbotBackendStack(Stack):
 
         1. For questions about CERTIFICATES or BANK CERTIFICATES:
             - Use the <GenerateCertificates> tool for Certificates or Bank Certificates.
-            - Obtain the 'from_number' from the user's input, if found.
+            - Obtain the 'from_number' from the user's input.
             - ONLY return the HTTP presigned URL after executed.
 
         """
@@ -396,7 +396,7 @@ class ChatbotBackendStack(Stack):
                                     "from_number": aws_bedrock.CfnAgent.ParameterDetailProperty(
                                         type="string",
                                         description="from_number to generate user certificates",
-                                        required=False,
+                                        required=True,
                                     ),
                                 },
                             )
@@ -414,7 +414,7 @@ class ChatbotBackendStack(Stack):
 
         1. For questions about COLOMBIA-POINTS:
             - Use the <GetBankRewards> tool for Puntos Colombia or Rewards.
-            - Obtain the 'from_number' from the user's input, if found.
+            - Obtain the 'from_number' from the user's input.
         """
         self.bedrock_agent_3 = aws_bedrock.CfnAgent(
             self,
@@ -442,7 +442,7 @@ class ChatbotBackendStack(Stack):
                                     "from_number": aws_bedrock.CfnAgent.ParameterDetailProperty(
                                         type="string",
                                         description="from_number to get Colombian Points or bank rewards",
-                                        required=False,
+                                        required=True,
                                     ),
                                 },
                             )
@@ -488,7 +488,7 @@ class ChatbotBackendStack(Stack):
                 #                     "from_number": aws_bedrock.CfnAgent.ParameterDetailProperty(
                 #                         type="string",
                 #                         description="from_number for the transaction",
-                #                         required=False,
+                #                         required=True,
                 #                     ),
                 #                     "receiver_key": aws_bedrock.CfnAgent.ParameterDetailProperty(
                 #                         type="string",
@@ -521,7 +521,7 @@ class ChatbotBackendStack(Stack):
                 #                     "from_number": aws_bedrock.CfnAgent.ParameterDetailProperty(
                 #                         type="string",
                 #                         description="from_number for the transaction",
-                #                         required=False,
+                #                         required=True,
                 #                     ),
                 #                     "receiver_key": aws_bedrock.CfnAgent.ParameterDetailProperty(
                 #                         type="string",
@@ -554,7 +554,7 @@ class ChatbotBackendStack(Stack):
                 #                     "from_number": aws_bedrock.CfnAgent.ParameterDetailProperty(
                 #                         type="string",
                 #                         description="from_number of the user",
-                #                         required=False,
+                #                         required=True,
                 #                     ),
                 #                 },
                 #             )
@@ -592,13 +592,13 @@ class ChatbotBackendStack(Stack):
         aws_ssm.StringParameter(
             self,
             "SSMAgentAlias",
-            parameter_name=f"/{self.deployment_environment}/{self.main_resources_name}/bedrock-agent-alias-id",
+            parameter_name=f"/{self.deployment_environment}/{self.app_config['base_bank']}/bedrock-agent-alias-id",
             string_value="REPLACE_ME_WITH_SUPERVISOR_AGENT_ALIAS_ID",
         )
         aws_ssm.StringParameter(
             self,
             "SSMAgentId",
-            parameter_name=f"/{self.deployment_environment}/{self.main_resources_name}/bedrock-agent-id",
+            parameter_name=f"/{self.deployment_environment}/{self.app_config['base_bank']}/bedrock-agent-id",
             string_value="REPLACE_ME_WITH_SUPERVISOR_AGENT_ID",
         )
 
@@ -631,7 +631,7 @@ class ChatbotBackendStack(Stack):
             ),
             default_cors_preflight_options=aws_apigw.CorsOptions(
                 allow_origins=aws_apigw.Cors.ALL_ORIGINS,
-                allow_methods=["GET", "POST"],
+                allow_methods=aws_apigw.Cors.ALL_METHODS,
                 allow_headers=["*"],
             ),
             default_method_options=self.api_method_options_public,
@@ -738,6 +738,6 @@ class ChatbotBackendStack(Stack):
         CfnOutput(
             self,
             "APIChatbot",
-            value=f"https://{self.api.rest_api_id}.execute-api.{self.region}.amazonaws.com/{self.deployment_environment}/api/v1/webhook",
+            value=f"https://{self.api.rest_api_id}.execute-api.{self.region}.amazonaws.com/{self.deployment_environment}/api/v1/invokemodel",
             description="API endpoint Chatbot",
         )
