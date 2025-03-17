@@ -15,7 +15,7 @@ dynamodb_helper = DynamoDBHelper(table_name=TABLE_NAME)
 
 def action_group_fetch_user_products(parameters):
     # Extract user_id from parameters
-    user_id = None
+    user_id = "123456789"  # Intentionally set default number for workshop
     for param in parameters:
         if param["name"] == "from_number":
             user_id = param["value"]  # User ID is also the from_number for now...
@@ -30,7 +30,7 @@ def action_group_fetch_user_products(parameters):
 
 def action_group_create_credit(parameters):
     # Extract user_id from parameters
-    user_id = None
+    user_id = "123456789"  # Intentionally set default number for workshop
     for param in parameters:
         if param["name"] == "from_number":
             user_id = param["value"]  # User ID is also the from_number for now...

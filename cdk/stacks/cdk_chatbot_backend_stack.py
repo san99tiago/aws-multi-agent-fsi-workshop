@@ -8,10 +8,8 @@ from aws_cdk import (
     aws_dynamodb,
     aws_iam,
     aws_lambda,
-    aws_opensearchserverless as oss,
     aws_ssm,
     aws_s3,
-    aws_s3_deployment as s3d,
     aws_apigateway as aws_apigw,
     custom_resources as cr,
     CustomResource,
@@ -58,6 +56,7 @@ class ChatbotBackendStack(Stack):
         self.create_s3_buckets()
         self.create_lambda_layers()
         self.create_lambda_functions()
+        self.create_bedrock_roles()
         self.create_bedrock_child_agents()
         self.create_rest_api()
         self.configure_rest_api()
@@ -113,6 +112,13 @@ class ChatbotBackendStack(Stack):
             layer_version_arn=f"arn:aws:lambda:{self.region}:017000801446:layer:AWSLambdaPowertoolsPythonV2:71",
         )
 
+        # Layer for "Pillow" (for image generation, etc)
+        self.lambda_layer_pillow = aws_lambda.LayerVersion.from_layer_version_arn(
+            self,
+            "Layer-Pillow",
+            layer_version_arn=f"arn:aws:lambda:{self.region}:770693421928:layer:Klayers-p311-Pillow:7",
+        )
+
         # Layer for "common" Python requirements (fastapi, mangum, pydantic, ...)
         self.lambda_layer_common = aws_lambda.LayerVersion(
             self,
@@ -152,13 +158,15 @@ class ChatbotBackendStack(Stack):
             environment={
                 "ENVIRONMENT": self.app_config["deployment_environment"],
                 "LOG_LEVEL": self.app_config["log_level"],
+                "BUCKET_NAME": self.bucket_additional_assets.bucket_name,
                 "DYNAMODB_TABLE": self.dynamodb_table.table_name,
                 "BASE_BANK": self.app_config["base_bank"],
                 "BOT_NAME": self.app_config["bot_name"],
             },
             layers=[
-                self.lambda_layer_powertools,
                 self.lambda_layer_common,
+                self.lambda_layer_powertools,
+                self.lambda_layer_pillow,
             ],
         )
         self.dynamodb_table.grant_read_write_data(self.lambda_chatbot_api)
@@ -187,13 +195,74 @@ class ChatbotBackendStack(Stack):
                 aws_iam.ManagedPolicy.from_aws_managed_policy_name(
                     "AmazonBedrockFullAccess",
                 ),
+            ],
+        )
+
+        # Lambda for the Action Group (used for Bedrock Agents)
+        # Note: Single Lambda for all Action Groups for now...
+        self.lambda_action_groups = aws_lambda.Function(
+            self,
+            "Lambda-AG-Generic",
+            runtime=aws_lambda.Runtime.PYTHON_3_11,
+            handler="agents/agents_handler.lambda_handler",
+            function_name=f"{self.main_resources_name}-bedrock-action-groups",
+            code=aws_lambda.Code.from_asset(PATH_TO_LAMBDA_FUNCTION_FOLDER),
+            timeout=Duration.seconds(60),
+            memory_size=512,
+            environment={
+                "ENVIRONMENT": self.app_config["deployment_environment"],
+                "LOG_LEVEL": self.app_config["log_level"],
+                "BUCKET_NAME": self.bucket_additional_assets.bucket_name,
+                "TABLE_NAME": self.dynamodb_table.table_name,
+                "BASE_BANK": self.app_config["base_bank"],
+                "BOT_NAME": self.app_config["bot_name"],
+            },
+            role=self.bedrock_agent_lambda_role,
+            layers=[
+                self.lambda_layer_common,
+                self.lambda_layer_powertools,
+                self.lambda_layer_pillow,
+            ],
+        )
+        # Add permissions to the Lambda Functions for DynamoDB and S3 Bucket
+        self.dynamodb_table.grant_read_write_data(self.lambda_action_groups)
+        self.bucket_additional_assets.grant_read_write(self.lambda_action_groups)
+
+        # Add permissions to the Lambda functions resource policies.
+        # The resource-based policy is to allow an AWS service to invoke your function.
+        self.lambda_action_groups.add_permission(
+            "AllowBedrockInvoke1",
+            principal=aws_iam.ServicePrincipal("bedrock.amazonaws.com"),
+            action="lambda:InvokeFunction",
+            source_arn=f"arn:aws:bedrock:{self.region}:{self.account}:agent/*",
+        )
+
+    def create_bedrock_roles(self) -> None:
+        """
+        Method to create the Bedrock Agent for the chatbot.
+        """
+        # TODO: refactor this huge function into independent methods... and eventually custom constructs!
+
+        self.bedrock_agent_role = aws_iam.Role(
+            self,
+            "BedrockAgentRole",
+            assumed_by=aws_iam.ServicePrincipal("bedrock.amazonaws.com"),
+            role_name=f"{self.main_resources_name}-bedrock-agent-role",
+            description="Role for Bedrock Agent",
+            managed_policies=[
                 aws_iam.ManagedPolicy.from_aws_managed_policy_name(
-                    "AmazonDynamoDBFullAccess",
+                    "AmazonBedrockFullAccess",
+                ),
+                aws_iam.ManagedPolicy.from_aws_managed_policy_name(
+                    "AWSLambda_FullAccess",
+                ),
+                aws_iam.ManagedPolicy.from_aws_managed_policy_name(
+                    "CloudWatchLogsFullAccess",
                 ),
             ],
         )
         # Add additional IAM actions for the bedrock agent
-        self.bedrock_agent_lambda_role.add_to_policy(
+        self.bedrock_agent_role.add_to_policy(
             aws_iam.PolicyStatement(
                 effect=aws_iam.Effect.ALLOW,
                 actions=[
@@ -204,36 +273,6 @@ class ChatbotBackendStack(Stack):
                 ],
                 resources=["*"],
             )
-        )
-
-        # Lambda for the Action Group (used for Bedrock Agents)
-        # Note: Single Lambda for all Action Groups for now...
-        self.lambda_action_groups = aws_lambda.Function(
-            self,
-            "Lambda-AG-Generic",
-            runtime=aws_lambda.Runtime.PYTHON_3_11,
-            handler="bedrock_agent/lambda_function.lambda_handler",
-            function_name=f"{self.main_resources_name}-bedrock-action-groups",
-            code=aws_lambda.Code.from_asset(PATH_TO_LAMBDA_FUNCTION_FOLDER),
-            timeout=Duration.seconds(60),
-            memory_size=512,
-            environment={
-                "ENVIRONMENT": self.app_config["deployment_environment"],
-                "LOG_LEVEL": self.app_config["log_level"],
-                "TABLE_NAME": self.app_config["agents_data_table_name"],
-                "BASE_BANK": self.app_config["base_bank"],
-                "BOT_NAME": self.app_config["bot_name"],
-            },
-            role=self.bedrock_agent_lambda_role,
-        )
-
-        # Add permissions to the Lambda functions resource policies.
-        # The resource-based policy is to allow an AWS service to invoke your function.
-        self.lambda_action_groups.add_permission(
-            "AllowBedrockInvoke1",
-            principal=aws_iam.ServicePrincipal("bedrock.amazonaws.com"),
-            action="lambda:InvokeFunction",
-            source_arn=f"arn:aws:bedrock:{self.region}:{self.account}:agent/*",
         )
 
     def create_bedrock_child_agents(self):
@@ -249,17 +288,17 @@ class ChatbotBackendStack(Stack):
 
         1. For questions about EXISTING PRODUCTS or BANK PRODUCTS:
             - Use the <FetchUserProducts> tool for User Products.
-            - Obtain the 'from_number' from the user's input.
+            - Obtain the 'from_number' from the user's input, if found.
 
         2. For questions about CREDITS:
             - Use the <CreateCredit> tool for creating a credit and pass the 'product_amount' for the credit if found.
-            - Obtain the 'from_number' from the user's input.
+            - Obtain the 'from_number' from the user's input, if found.
         """
         self.bedrock_agent_1 = aws_bedrock.CfnAgent(
             self,
             f"BedrockAgent{self.agents_version}CRUDProducts",
             agent_name=f"{self.main_resources_name}-agent-{self.agents_version}-financial-products",
-            agent_resource_role_arn=self.bedrock_agent_lambda_role.role_arn,
+            agent_resource_role_arn=self.bedrock_agent_role.role_arn,
             description="Agent specialized in financial products. Is able to run CRUD operations towards the user products such as <FetchUserProducts> or <CreateCredit>.",
             foundation_model=self.bedrock_llm_model_id,
             instruction=agent_1_instructions,
@@ -281,7 +320,7 @@ class ChatbotBackendStack(Stack):
                                     "from_number": aws_bedrock.CfnAgent.ParameterDetailProperty(
                                         type="string",
                                         description="from_number to fetch the user products",
-                                        required=True,
+                                        required=False,
                                     ),
                                 },
                             )
@@ -304,7 +343,7 @@ class ChatbotBackendStack(Stack):
                                     "from_number": aws_bedrock.CfnAgent.ParameterDetailProperty(
                                         type="string",
                                         description="from_number to create the credit",
-                                        required=True,
+                                        required=False,
                                     ),
                                     "product_amount": aws_bedrock.CfnAgent.ParameterDetailProperty(
                                         type="string",
@@ -324,12 +363,18 @@ class ChatbotBackendStack(Stack):
         # ------------------------------------
         agent_2_instructions = """
         You are a specialized agent in Bank Certificates. Is able to generate PDF certificates with <GenerateCertificates>.",
+
+        1. For questions about CERTIFICATES or BANK CERTIFICATES:
+            - Use the <GenerateCertificates> tool for Certificates or Bank Certificates.
+            - Obtain the 'from_number' from the user's input, if found.
+            - ONLY return the HTTP presigned URL after executed.
+
         """
         self.bedrock_agent_2 = aws_bedrock.CfnAgent(
             self,
             f"BedrockAgent{self.agents_version}Certificates",
             agent_name=f"{self.main_resources_name}-agent-{self.agents_version}-certificates",
-            agent_resource_role_arn=self.bedrock_agent_lambda_role.role_arn,
+            agent_resource_role_arn=self.bedrock_agent_role.role_arn,
             description="Agent specialized in certificates. Is able to generate PDF certificates with <GenerateCertificates>.",
             foundation_model=self.bedrock_llm_model_id,
             instruction=agent_2_instructions,
@@ -351,7 +396,7 @@ class ChatbotBackendStack(Stack):
                                     "from_number": aws_bedrock.CfnAgent.ParameterDetailProperty(
                                         type="string",
                                         description="from_number to generate user certificates",
-                                        required=True,
+                                        required=False,
                                     ),
                                 },
                             )
@@ -365,13 +410,17 @@ class ChatbotBackendStack(Stack):
         # Bedrock child agent 2 (Bank Rewards)
         # ------------------------------------
         agent_3_instructions = """
-        You are a specialized agent in Bank Rewards. Is able to get user rewards with <GetBankRewards>.",
+        You are a specialized agent in Bank Rewards. Is able to get user rewards with <GetBankRewards>."
+
+        1. For questions about COLOMBIA-POINTS:
+            - Use the <GetBankRewards> tool for Puntos Colombia or Rewards.
+            - Obtain the 'from_number' from the user's input, if found.
         """
-        self.bedrock_agent_2 = aws_bedrock.CfnAgent(
+        self.bedrock_agent_3 = aws_bedrock.CfnAgent(
             self,
             f"BedrockAgent{self.agents_version}BankRewards",
             agent_name=f"{self.main_resources_name}-agent-{self.agents_version}-bank-rewards",
-            agent_resource_role_arn=self.bedrock_agent_lambda_role.role_arn,
+            agent_resource_role_arn=self.bedrock_agent_role.role_arn,
             description="Agent specialized in bank rewards. Is able to get user rewards with <GetBankRewards>.",
             foundation_model=self.bedrock_llm_model_id,
             instruction=agent_3_instructions,
@@ -393,7 +442,7 @@ class ChatbotBackendStack(Stack):
                                     "from_number": aws_bedrock.CfnAgent.ParameterDetailProperty(
                                         type="string",
                                         description="from_number to get Colombian Points or bank rewards",
-                                        required=True,
+                                        required=False,
                                     ),
                                 },
                             )
@@ -439,7 +488,7 @@ class ChatbotBackendStack(Stack):
                 #                     "from_number": aws_bedrock.CfnAgent.ParameterDetailProperty(
                 #                         type="string",
                 #                         description="from_number for the transaction",
-                #                         required=True,
+                #                         required=False,
                 #                     ),
                 #                     "receiver_key": aws_bedrock.CfnAgent.ParameterDetailProperty(
                 #                         type="string",
@@ -472,7 +521,7 @@ class ChatbotBackendStack(Stack):
                 #                     "from_number": aws_bedrock.CfnAgent.ParameterDetailProperty(
                 #                         type="string",
                 #                         description="from_number for the transaction",
-                #                         required=True,
+                #                         required=False,
                 #                     ),
                 #                     "receiver_key": aws_bedrock.CfnAgent.ParameterDetailProperty(
                 #                         type="string",
@@ -505,7 +554,7 @@ class ChatbotBackendStack(Stack):
                 #                     "from_number": aws_bedrock.CfnAgent.ParameterDetailProperty(
                 #                         type="string",
                 #                         description="from_number of the user",
-                #                         required=True,
+                #                         required=False,
                 #                     ),
                 #                 },
                 #             )
@@ -642,7 +691,7 @@ class ChatbotBackendStack(Stack):
             memory_size=128,
             environment={
                 "LOG_LEVEL": "DEBUG",
-                "DYNAMODB_TABLE_NAME": self.dynamodb_table.table_name,
+                "DYNAMODB_TABLE": self.dynamodb_table.table_name,
             },
         )
         lambda_custom_resource_load_data.role.add_managed_policy(

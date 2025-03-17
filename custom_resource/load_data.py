@@ -10,10 +10,10 @@ import cfnresponse
 
 # IMPORTANT: Replace these with your own phones!!!
 PHONE_NUMBER_1 = "123456789"  # Demo number (intentional for Workshop)
-DYNAMODB_TABLE_NAME = os.environ["DYNAMODB_TABLE_NAME"]
+DYNAMODB_TABLE = os.environ["DYNAMODB_TABLE"]
 
 dynamodb = boto3.resource("dynamodb")
-table = dynamodb.Table(DYNAMODB_TABLE_NAME)
+table = dynamodb.Table(DYNAMODB_TABLE)
 
 
 def load_data():
@@ -79,7 +79,7 @@ def load_data():
 
     return {
         "response": "ok",
-        "table_name": DYNAMODB_TABLE_NAME,
+        "table_name": DYNAMODB_TABLE,
     }
 
 

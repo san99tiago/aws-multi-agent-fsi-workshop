@@ -22,10 +22,9 @@ dynamodb_helper = DynamoDBHelper(table_name=TABLE_NAME)
 
 def action_group_generate_certificates(parameters):
     # Extract user_id from parameters
-    user_id = None
+    user_id = "123456789"  # Intentionally set default number for workshop
     for param in parameters:
         if param["name"] == "from_number":
-            from_number = param["value"]
             user_id = param["value"]  # User ID is also the from_number for now...
 
     all_user_products = dynamodb_helper.query_by_pk_and_sk_begins_with(
@@ -53,4 +52,4 @@ def action_group_generate_certificates(parameters):
     # TODO: Update to a PRESIGNED-URL!!!
 
     logger.info(f"Certificate URL: {certificate_url}")
-    return f"Certificate generated successfully for {BASE_BANK} client at {certificate_url}!"
+    return certificate_url

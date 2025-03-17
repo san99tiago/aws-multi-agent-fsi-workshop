@@ -16,7 +16,7 @@ dynamodb_helper = DynamoDBHelper(table_name=TABLE_NAME)
 
 def action_group_get_rewards(parameters):
     # Extract user_id from parameters
-    user_id = None
+    user_id = "123456789"  # Intentionally set default number for workshop
     for param in parameters:
         if param["name"] == "from_number":
             from_number = param["value"]
