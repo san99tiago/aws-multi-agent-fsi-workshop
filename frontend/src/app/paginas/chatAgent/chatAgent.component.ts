@@ -47,6 +47,7 @@ export class ChatAgentComponent implements OnInit, AfterViewChecked {
 	public form: FormGroup;
 	public messages: Array<Message> = [];
 	public canSendMessage = true;
+	public API_ENDPOINT: String = "";  // Dynamically loaded from "public/outputs.json"
 
 	constructor(private formBuilder: FormBuilder, private config: PrimeNGConfig, private messageService: MessageService, private httpClient: HttpClient) { }
 
@@ -59,6 +60,20 @@ export class ChatAgentComponent implements OnInit, AfterViewChecked {
 	public actualInx = 0
 
 	ngOnInit(): void {
+
+
+		// LOAD API ENDPOINT DYNAMICALLY FROM "outputs.json" file
+		// Load the outputs.json file
+		this.httpClient.get<any>('outputs.json').subscribe(
+			(data) => {
+				this.API_ENDPOINT = data['fsi-multi-agents-backend-prod'].APIChatbot;
+				console.log('Loaded API_ENDPOINT:', this.API_ENDPOINT);
+			},
+			(error) => {
+				console.error('Failed to load API endpoint:', error);
+			}
+		);
+
 
 		this.form = this.formBuilder.group({
 			message: ['']
@@ -151,42 +166,6 @@ export class ChatAgentComponent implements OnInit, AfterViewChecked {
 			'Content-Type': 'application/json'
 		});
 
-
-		//let dataBody = {"promptBase": "", "imageBase":datosPay}
-
-
-		/*var botMessage: Message = {text: "Primero validaré tu información, para verificar que sea correcta y soportada: ", type: MessageType.Bot, Style:'col-md-8'};
-			 this.messages.push(botMessage);
-		
-		let validPrompt = 'validated if "'+ this.prompt+ '" request is valid according supported services and specifications if not return a tag <ERROR>'
-		
-		let dataBody = {"promptBase": validPrompt, "messages": this.message}
-		
-		let waitMessage: Message = {type: MessageType.Loading, Style:'col-md-8'};
-		this.messages.push(waitMessage);
-		
-		let dataBodyRequest = {"promptBase": this.prompt, "messages": this.message}
-		this.prompt = ""
-		
-		result = await this.httpClient.post<any>("https://nmanm7dmal.execute-api.us-east-1.amazonaws.com/prod/carbon", dataBody, { headers }).toPromise();
-		
-		
-		this.messages.pop();
-		if (result.body.Answer.includes('<ERROR>')){
-			this.messages.pop();
-			var info = result.body.Answer.replace('<ERROR>', '')
-			info = info.replace('</ERROR>', '')
-			 var botMessage: Message = {text: info, type: MessageType.Bot, Style:'col-md-8'};
-			 this.messages.push(botMessage);
-			this.canSendMessage = true;
-			return
-		}
-		
-		var botMessage: Message = {text: 'Listo, todo está correcto :D Ahora procederé con la respuesta:', type: MessageType.Bot, Style:'col-md-8'};
-		this.messages.push(botMessage);
-		*/
-		//console.log("info es: "+JSON.stringify( dataBody))
-
 		//let dataBodyRequest = {"promptBase": this.prompt, "messages": this.message} -> se eliminan los mensajes
 		let dataBodyRequest = { "input": this.prompt, "from_number": "123456789" }
 		this.prompt = ""
@@ -194,7 +173,7 @@ export class ChatAgentComponent implements OnInit, AfterViewChecked {
 		let waitMessage = { type: MessageType.Loading, Style: 'col-md-8' };
 		this.messages.push(waitMessage);
 		let result = await this.httpClient.post<any>(
-			"<FSI_ENDPOINT_REPLACE_ME>/invokemodel",
+			`${this.API_ENDPOINT}`,
 			dataBodyRequest,
 			{ headers }
 		).toPromise();
@@ -219,11 +198,11 @@ export class ChatAgentComponent implements OnInit, AfterViewChecked {
 			/*console.log(resp.analisis)
 			var botMessage: Message = {text: resp.analisis, type: MessageType.Bot};
 			this.messages.push(botMessage);
-		    
+
 			botMessage= {text: resp.listaRecomendaciones, type: MessageType.Bot};
 			this.messages.push(botMessage);
-		   this.canSendMessage = true;
-		   console.log(resp)*/
+			this.canSendMessage = true;
+			console.log(resp)*/
 		}
 		this.loading = false
 
@@ -248,6 +227,6 @@ export class ChatAgentComponent implements OnInit, AfterViewChecked {
 	}
 
 	private scrollToBottom(): void {
-		//this.messageContainer.nativeElement.scrollTop = this.messageContainer.nativeElement.scrollHeight;         
+		//this.messageContainer.nativeElement.scrollTop = this.messageContainer.nativeElement.scrollHeight;
 	}
 }

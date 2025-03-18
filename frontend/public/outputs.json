@@ -1,0 +1,9 @@
+{
+  "fsi-multi-agents-backend-prod": {
+    "APIChatbot": "<THIS_WILL_BE_REPLACED_DYNAMICALLY>/invokemodel",
+    "DeploymentEnvironment": "prod",
+    "RESTAPIEndpoint694760FB": "<THIS_WILL_BE_REPLACED_DYNAMICALLY>",
+    "APIDocs": "<THIS_WILL_BE_REPLACED_DYNAMICALLY>/docs",
+    "Comment": "On CDK Deploy, this file will be replaced dynamically by backend, so that frontend uses it"
+  }
+}
