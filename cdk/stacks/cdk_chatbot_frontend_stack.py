@@ -2,18 +2,23 @@
 import os
 
 # External imports
+# External imports
 from aws_cdk import (
+    Stack,
+    CfnOutput,
+    aws_cloudfront,
+    aws_cloudfront_origins,
     aws_s3,
     aws_s3_deployment,
     RemovalPolicy,
-    Stack,
+    Duration,
 )
 from constructs import Construct
 
 
-class FrontendBackendStack(Stack):
+class ChatbotFrontendStack(Stack):
     """
-    Class to create the FrontendAPI resources.
+    Class to create the FrontendAPI resources with S3, S3 Deploy and Cloudfront.
     """
 
     def __init__(
@@ -43,6 +48,10 @@ class FrontendBackendStack(Stack):
         # Main methods for the deployment
         self.create_s3_buckets()
         self.upload_objects_to_s3()
+        self.configure_cloudfront_distribution()
+
+        # Generate Cloudformation outputs
+        self.generate_cloudformation_outputs()
 
     def create_s3_buckets(self):
         """
@@ -76,4 +85,58 @@ class FrontendBackendStack(Stack):
             "S3Deployment1",
             sources=[aws_s3_deployment.Source.asset(PATH_TO_S3_FOLDER)],
             destination_bucket=self.bucket_frontend,
+        )
+
+    def configure_cloudfront_distribution(self):
+        """
+        Method to configure the CloudFront distribution for the frontend.
+        """
+        cloudfront_origin_access_identity = aws_cloudfront.OriginAccessIdentity(
+            self,
+            "CloudFrontOriginAccessIdentity",
+            comment=f"Origin Access Identity for the s3 frontend for {self.main_resources_name}",
+        )
+        self.bucket_frontend.grant_read(cloudfront_origin_access_identity)
+
+        # TODO: enhance with better security headers (such as strictTransport, xss, etc)
+
+        self.cloudfront_distribution = aws_cloudfront.Distribution(
+            self,
+            "CloudFrontDistribution",
+            comment=f"CloudFront Distribution for the s3 frontend for {self.main_resources_name}",
+            default_behavior=aws_cloudfront.BehaviorOptions(
+                origin=aws_cloudfront_origins.S3Origin(
+                    self.bucket_frontend,
+                    origin_access_identity=cloudfront_origin_access_identity,
+                ),
+                viewer_protocol_policy=aws_cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+            ),
+            default_root_object="index.html",
+            error_responses=[
+                aws_cloudfront.ErrorResponse(
+                    http_status=404,
+                    ttl=Duration.seconds(1),
+                    response_page_path="/index.html",
+                )
+            ],
+            enabled=True,
+        )
+
+    def generate_cloudformation_outputs(self) -> None:
+        """
+        Method to add the relevant CloudFormation outputs.
+        """
+
+        CfnOutput(
+            self,
+            "DeploymentEnvironment",
+            value=self.app_config["deployment_environment"],
+            description="Deployment environment",
+        )
+
+        CfnOutput(
+            self,
+            "CloudFrontDistributionDomainNam",
+            value=self.cloudfront_distribution.domain_name,
+            description="CloudFront Distribution Domain Name",
         )

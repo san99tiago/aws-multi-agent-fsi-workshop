@@ -16,20 +16,10 @@ infrastructure:
     - label: main
       templateLocation: static/main.yaml
       parameters:
-        - templateParameter: ParticipantRoleName
-          defaultValue: "{{.ParticipantRoleName}}"
-        - templateParameter: ParticipantRoleArn
-          defaultValue: "{{.ParticipantRoleArn}}"
-        - templateParameter: ParticipantAssumedRoleSessionName
-          defaultValue: "{{.ParticipantAssumedRoleSessionName}}"
-        - templateParameter: ParticipantAssumedRoleArn
-          defaultValue: "{{.ParticipantAssumedRoleArn}}"
         - templateParameter: AssetsBucketName
           defaultValue: "{{.AssetsBucketName}}"
         - templateParameter: AssetsBucketPrefix
           defaultValue: "{{.AssetsBucketPrefix}}"
-        - templateParameter: EC2KeyPairName
-          defaultValue: "{{.EC2KeyPairName}}"
 
 
 awsAccountConfig:

@@ -288,11 +288,9 @@ class ChatbotBackendStack(Stack):
 
         1. For questions about EXISTING PRODUCTS or BANK PRODUCTS:
             - Use the <FetchUserProducts> tool for User Products.
-            - Obtain the 'from_number' from the user's input.
 
         2. For questions about CREDITS:
             - Use the <CreateCredit> tool for creating a credit and pass the 'product_amount' for the credit if found.
-            - Obtain the 'from_number' from the user's input.
         """
         self.bedrock_agent_1 = aws_bedrock.CfnAgent(
             self,
@@ -306,7 +304,7 @@ class ChatbotBackendStack(Stack):
             action_groups=[
                 aws_bedrock.CfnAgent.AgentActionGroupProperty(
                     action_group_name="FetchUserProducts",
-                    description="A function that is able to fetch the user products from the database from an input from_number and from_number.",
+                    description="A function that is able to fetch the user products from the database from an input.",
                     action_group_executor=aws_bedrock.CfnAgent.ActionGroupExecutorProperty(
                         lambda_=self.lambda_action_groups.function_arn,
                     ),
@@ -315,21 +313,21 @@ class ChatbotBackendStack(Stack):
                             aws_bedrock.CfnAgent.FunctionProperty(
                                 name="FetchUserProducts",
                                 # the properties below are optional
-                                description="Function to fetch the user products based on the input input from_number",
-                                parameters={
-                                    "from_number": aws_bedrock.CfnAgent.ParameterDetailProperty(
-                                        type="string",
-                                        description="from_number to fetch the user products",
-                                        required=True,
-                                    ),
-                                },
+                                description="Function to fetch the user products based on the input",
+                                # parameters={
+                                #     "from_number": aws_bedrock.CfnAgent.ParameterDetailProperty(
+                                #         type="string",
+                                #         description="from_number to fetch the user products",
+                                #         required=False,
+                                #     ),
+                                # },
                             )
                         ]
                     ),
                 ),
                 aws_bedrock.CfnAgent.AgentActionGroupProperty(
                     action_group_name="CreateCredit",
-                    description="A function that is able to create credits from an input 'from_number' and 'product_amount'.",
+                    description="A function that is able to create credits from an input 'product_amount'.",
                     action_group_executor=aws_bedrock.CfnAgent.ActionGroupExecutorProperty(
                         lambda_=self.lambda_action_groups.function_arn,
                     ),
@@ -338,13 +336,13 @@ class ChatbotBackendStack(Stack):
                             aws_bedrock.CfnAgent.FunctionProperty(
                                 name="CreateCredit",
                                 # the properties below are optional
-                                description="Function to create credits based on the 'from_number' and 'product_amount'.",
+                                description="Function to create credits based on the 'product_amount'.",
                                 parameters={
-                                    "from_number": aws_bedrock.CfnAgent.ParameterDetailProperty(
-                                        type="string",
-                                        description="from_number to create the credit",
-                                        required=True,
-                                    ),
+                                    # "from_number": aws_bedrock.CfnAgent.ParameterDetailProperty(
+                                    #     type="string",
+                                    #     description="from_number to create the credit",
+                                    #     required=False,
+                                    # ),
                                     "product_amount": aws_bedrock.CfnAgent.ParameterDetailProperty(
                                         type="string",
                                         description="product_amount to create the credit",
@@ -366,9 +364,7 @@ class ChatbotBackendStack(Stack):
 
         1. For questions about CERTIFICATES or BANK CERTIFICATES:
             - Use the <GenerateCertificates> tool for Certificates or Bank Certificates.
-            - Obtain the 'from_number' from the user's input.
             - ONLY return the HTTP presigned URL after executed.
-
         """
         self.bedrock_agent_2 = aws_bedrock.CfnAgent(
             self,
@@ -382,7 +378,7 @@ class ChatbotBackendStack(Stack):
             action_groups=[
                 aws_bedrock.CfnAgent.AgentActionGroupProperty(
                     action_group_name="GenerateCertificates",
-                    description="A function that is able to generate the user certificates from an input from_number.",
+                    description="A function that is able to generate the user certificates from an input.",
                     action_group_executor=aws_bedrock.CfnAgent.ActionGroupExecutorProperty(
                         lambda_=self.lambda_action_groups.function_arn,
                     ),
@@ -391,14 +387,14 @@ class ChatbotBackendStack(Stack):
                             aws_bedrock.CfnAgent.FunctionProperty(
                                 name="GenerateCertificates",
                                 # the properties below are optional
-                                description="Function to generate user certificates or bank certificates based on the input from_number",
-                                parameters={
-                                    "from_number": aws_bedrock.CfnAgent.ParameterDetailProperty(
-                                        type="string",
-                                        description="from_number to generate user certificates",
-                                        required=True,
-                                    ),
-                                },
+                                description="Function to generate user certificates or bank certificates based on the input",
+                                # parameters={
+                                #     "from_number": aws_bedrock.CfnAgent.ParameterDetailProperty(
+                                #         type="string",
+                                #         description="from_number to generate user certificates",
+                                #         required=False,
+                                #     ),
+                                # },
                             )
                         ]
                     ),
@@ -414,7 +410,6 @@ class ChatbotBackendStack(Stack):
 
         1. For questions about COLOMBIA-POINTS:
             - Use the <GetBankRewards> tool for Puntos Colombia or Rewards.
-            - Obtain the 'from_number' from the user's input.
         """
         self.bedrock_agent_3 = aws_bedrock.CfnAgent(
             self,
@@ -428,7 +423,7 @@ class ChatbotBackendStack(Stack):
             action_groups=[
                 aws_bedrock.CfnAgent.AgentActionGroupProperty(
                     action_group_name="GetBankRewards",
-                    description="A function that is able to get Colombian Points or bank rewards from an input from_number.",
+                    description="A function that is able to get Colombian Points or bank rewards from an input.",
                     action_group_executor=aws_bedrock.CfnAgent.ActionGroupExecutorProperty(
                         lambda_=self.lambda_action_groups.function_arn,
                     ),
@@ -437,14 +432,14 @@ class ChatbotBackendStack(Stack):
                             aws_bedrock.CfnAgent.FunctionProperty(
                                 name="GetBankRewards",
                                 # the properties below are optional
-                                description="Function to get Colombian Points or bank rewards based on the input from_number",
-                                parameters={
-                                    "from_number": aws_bedrock.CfnAgent.ParameterDetailProperty(
-                                        type="string",
-                                        description="from_number to get Colombian Points or bank rewards",
-                                        required=True,
-                                    ),
-                                },
+                                description="Function to get Colombian Points or bank rewards based on the input",
+                                # parameters={
+                                #     "from_number": aws_bedrock.CfnAgent.ParameterDetailProperty(
+                                #         type="string",
+                                #         description="from_number to get Colombian Points or bank rewards",
+                                #         required=False,
+                                #     ),
+                                # },
                             )
                         ]
                     ),

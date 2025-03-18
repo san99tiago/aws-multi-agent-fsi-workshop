@@ -9,8 +9,7 @@ import aws_cdk as cdk
 # Own imports
 from helpers.add_tags import add_tags_to_app
 from stacks.cdk_chatbot_backend_stack import ChatbotBackendStack
-
-# from cdk.stacks.cdk_chatbot_frontend_stack import ChatbotFrontendStack
+from stacks.cdk_chatbot_frontend_stack import ChatbotFrontendStack
 
 # Pending front...
 
@@ -45,18 +44,18 @@ ChatbotBackendStack(
     description=f"Stack for {MAIN_RESOURCES_NAME} backend infrastructure in {DEPLOYMENT_ENVIRONMENT} environment",
 )
 
-# # STACK 2: Auth Frontend component
-# FrontendStack(
-#     app,
-#     f"{MAIN_RESOURCES_NAME}-frontend-{DEPLOYMENT_ENVIRONMENT}",
-#     MAIN_RESOURCES_NAME,
-#     APP_CONFIG,
-#     env={
-#         "account": os.environ.get("CDK_DEFAULT_ACCOUNT"),
-#         "region": os.environ.get("CDK_DEFAULT_REGION"),
-#     },
-#     description=f"Stack for {MAIN_RESOURCES_NAME} frontend infrastructure in {DEPLOYMENT_ENVIRONMENT} environment",
-# )
+# STACK 2:Frontend component
+ChatbotFrontendStack(
+    app,
+    f"{MAIN_RESOURCES_NAME}-frontend-{DEPLOYMENT_ENVIRONMENT}",
+    MAIN_RESOURCES_NAME,
+    APP_CONFIG,
+    env={
+        "account": os.environ.get("CDK_DEFAULT_ACCOUNT"),
+        "region": os.environ.get("CDK_DEFAULT_REGION"),
+    },
+    description=f"Stack for {MAIN_RESOURCES_NAME} frontend infrastructure in {DEPLOYMENT_ENVIRONMENT} environment",
+)
 
 
 add_tags_to_app(

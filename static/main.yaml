@@ -2,22 +2,6 @@ Parameters:
   ZipFileWithAssets:
     Type: String
     Default: all_content.zip
-  ParticipantRoleName:
-    Description: optional - use only during AWS Event in Workshop Studio
-    Type: String
-    Default: "" # WSParticipantRole
-  ParticipantRoleArn:
-    Description: optional - use only during AWS Event in Workshop Studio
-    Type: String
-    Default: "" # arn:aws:iam::123456123456:role/WSParticipantRole
-  ParticipantAssumedRoleSessionName:
-    Description: optional - use only during AWS Event in Workshop Studio
-    Type: String
-    Default: "" # Participant
-  ParticipantAssumedRoleArn:
-    Description: optional - use only during AWS Event in Workshop Studio
-    Type: String
-    Default: "" # arn:aws:sts::123456123456:assumed-role/WSParticipantRole/Participant
   AssetsBucketName:
     Description: optional - use only during AWS Event in Workshop Studio
     Type: String
@@ -26,10 +10,6 @@ Parameters:
     Description: optional - use only during AWS Event in Workshop Studio
     Type: String
     Default: "" # 371c6734-2735-4958-8749-4f4db058a75f/assets/
-  EC2KeyPairName:
-    Description: optional - use only during AWS Event in Workshop Studio
-    Type: String
-    Default: "" # ws-default-keypair
   LatestAmiId :
     Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
     Default: '/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64'
@@ -143,10 +123,10 @@ Resources:
             echo "Download content from S3 bucket (CDK content source files)"
             aws s3api get-object \
                 --bucket "${AssetsBucketName}" \
-                --key "${AssetsBucketPrefix}all_content.zip" \
-                "/home/workshop/all_content.zip"
+                --key "${AssetsBucketPrefix}${ZipFileWithAssets}" \
+                "/home/workshop/${ZipFileWithAssets}"
 
-            unzip /home/workshop/all_content.zip -d /home/workshop/
+            unzip /home/workshop/${ZipFileWithAssets} -d /home/workshop/
 
 
             # Activate Python3 virtual environment
@@ -165,7 +145,10 @@ Resources:
             cdk bootstrap
             export DEPLOYMENT_ENVIRONMENT=prod
             export AWS_DEFAULT_REGION=us-east-1
-            cdk deploy --require-approval never --all
+            # Backend deployment...
+            cdk deploy fsi-multi-agents-backend-prod  --outputs-file /home/workshop/frontend/public/outputs.json --require-approval never
+            # Frontend deployment (that uses the "/home/workshop/frontend/public/outputs.json" as part of the config)
+            cdk deploy fsi-multi-agents-frontend-prod --require-approval never
 
             # --------------------------------------------- << Added by Santi (END)
 
