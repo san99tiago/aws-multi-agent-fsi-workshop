@@ -5,13 +5,15 @@ weight: 0
 
 ¡Bienvenido a este emocionante taller práctico! Exploraremos cómo construir un **Chatbot para la Industria de Servicios Financieros (FSI)** de última generación utilizando **Amazon Bedrock** y **Colaboración Multi-Agente**. En esta sesión, te guiaremos para crear desde cero un chatbot sofisticado, diseñado para manejar diversas tareas bancarias y ofrecer una experiencia al cliente impecable.
 
+![Workshop Architecture](/static/multi-agent-chatbot-fsi-v1.png)
+
 ## 🌟 ¿Qué Construirás?
 
-Nuestra solución de chatbot incluye **más de 5 agentes especializados**, cada uno con capacidades únicas:
+Crearás un chatbot con Generative-AI que incluye **más de 5 agentes especializados**, cada uno con capacidades únicas:
 
+- **Consulta de Productos**: Obtén y muestra los productos bancarios más recientes.
 - **Gestión de Transacciones**: Realiza transferencias de fondos y pagos de forma segura.
 - **Generación de Certificados**: Genera y comparte certificados oficiales del banco.
-- **Consulta de Productos**: Obtén y muestra los productos bancarios más recientes.
 - **Gestión de Créditos**: Abre y administra líneas de crédito para los clientes.
 - **Atención al Cliente**: Responde a consultas frecuentes y guía a los usuarios.
 

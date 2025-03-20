@@ -5,13 +5,15 @@ weight: 0
 
 Welcome to this exciting hands-on workshop, where we dive into building a cutting-edge **Financial Services Industry (FSI) Chatbot** using **Amazon Bedrock** and **Multi-Agent Collaboration**. In this session, we’ll guide you through creating a sophisticated chatbot from scratch, designed to handle a variety of banking tasks and provide a seamless customer experience.
 
+![Workshop Architecture](/static/multi-agent-chatbot-fsi-v1.png)
+
 ## 🌟 What You'll Build
 
 Our chatbot solution features **5+ specialized agents**, each bringing unique capabilities to the table:
 
+- **Product Details**: Fetch and display the latest banking products.
 - **Transaction Management**: Handle secure fund transfers and payments.
 - **Certificate Generation**: Generate and share official bank certificates.
-- **Product Inquiry**: Fetch and display the latest banking products.
 - **Credit Management**: Open and manage credit lines for customers.
 - **Customer Support**: Answer common queries and guide users.
 

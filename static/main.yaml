@@ -177,3 +177,4 @@ Resources:
 
             # Give 10 mins to send extra logs and troubleshoot if needed
             shutdown +10
+
