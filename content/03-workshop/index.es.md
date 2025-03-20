@@ -1,6 +1,6 @@
 ---
-título: "Taller"
-peso: 20
+title: "Taller"
+weight: 20
 ---
 
 # Descripción General del Taller (Alto Nivel) 🏦

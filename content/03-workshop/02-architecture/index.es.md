@@ -1,6 +1,6 @@
 ---
-título: "Arquitectura"
-peso: 32
+title: "Arquitectura"
+weight: 32
 ---
 
 # Arquitectura Original 🏗️

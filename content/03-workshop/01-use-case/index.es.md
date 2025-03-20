@@ -1,6 +1,6 @@
 ---
-título: "Caso de Uso"
-peso: 31
+title: "Caso de Uso"
+weight: 31
 ---
 
 # Caso de Uso de RUFUS Bank con IA Generativa 🏦
