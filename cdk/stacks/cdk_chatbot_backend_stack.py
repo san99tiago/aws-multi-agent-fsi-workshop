@@ -403,13 +403,13 @@ class ChatbotBackendStack(Stack):
         )
 
         # ------------------------------------
-        # Bedrock child agent 2 (Bank Rewards)
+        # Bedrock child agent 3 (Bank Rewards)
         # ------------------------------------
         agent_3_instructions = """
         You are a specialized agent in Bank Rewards. Is able to get user rewards with <GetBankRewards>."
 
-        1. For questions about COLOMBIA-POINTS:
-            - Use the <GetBankRewards> tool for Puntos Colombia or Rewards.
+        1. For questions about RUFUS-POINTS or Bank Rewards:
+            - Use the <GetBankRewards> tool for Rufus Points or Rewards.
         """
         self.bedrock_agent_3 = aws_bedrock.CfnAgent(
             self,
@@ -423,7 +423,7 @@ class ChatbotBackendStack(Stack):
             action_groups=[
                 aws_bedrock.CfnAgent.AgentActionGroupProperty(
                     action_group_name="GetBankRewards",
-                    description="A function that is able to get Colombian Points or bank rewards from an input.",
+                    description="A function that is able to get Rufus Points or bank rewards from an input.",
                     action_group_executor=aws_bedrock.CfnAgent.ActionGroupExecutorProperty(
                         lambda_=self.lambda_action_groups.function_arn,
                     ),
@@ -432,11 +432,11 @@ class ChatbotBackendStack(Stack):
                             aws_bedrock.CfnAgent.FunctionProperty(
                                 name="GetBankRewards",
                                 # the properties below are optional
-                                description="Function to get Colombian Points or bank rewards based on the input",
+                                description="Function to get Rufus Points or bank rewards based on the input",
                                 # parameters={
                                 #     "from_number": aws_bedrock.CfnAgent.ParameterDetailProperty(
                                 #         type="string",
-                                #         description="from_number to get Colombian Points or bank rewards",
+                                #         description="from_number to get Rufus Points or bank rewards",
                                 #         required=False,
                                 #     ),
                                 # },
@@ -444,143 +444,141 @@ class ChatbotBackendStack(Stack):
                         ]
                     ),
                 ),
-                # aws_bedrock.CfnAgent.AgentActionGroupProperty(
-                #     action_group_name="FetchMarketInsights",
-                #     description="A function that is able to fetch the latest market insights knowing the <risk_level> for the user.",
-                #     action_group_executor=aws_bedrock.CfnAgent.ActionGroupExecutorProperty(
-                #         lambda_=self.lambda_action_group_market_insights.function_arn,
-                #     ),
-                #     function_schema=aws_bedrock.CfnAgent.FunctionSchemaProperty(
-                #         functions=[
-                #             aws_bedrock.CfnAgent.FunctionProperty(
-                #                 name="FetchMarketInsights",
-                #                 # the properties below are optional
-                #                 description="Function that is able to fetch the latest market insights knowing the <risk_level> for the user.",
-                #                 parameters={
-                #                     "risk_level": aws_bedrock.CfnAgent.ParameterDetailProperty(
-                #                         type="string",
-                #                         description="Risk level to fetch the market insights",
-                #                         required=True,
-                #                     ),
-                #                 },
-                #             )
-                #         ]
-                #     ),
-                # ),
-                # aws_bedrock.CfnAgent.AgentActionGroupProperty(
-                #     action_group_name="StartTransaction",
-                #     description="A function that is able to start a transaction for the user with the 'from_number', 'receiver_key' and 'amount' inputs.",
-                #     action_group_executor=aws_bedrock.CfnAgent.ActionGroupExecutorProperty(
-                #         lambda_=self.lambda_action_group_transactions.function_arn,
-                #     ),
-                #     function_schema=aws_bedrock.CfnAgent.FunctionSchemaProperty(
-                #         functions=[
-                #             aws_bedrock.CfnAgent.FunctionProperty(
-                #                 name="StartTransaction",
-                #                 # the properties below are optional
-                #                 description="Function that is able to start a transaction for the user with the 'from_number', 'receiver_key' and 'amount' inputs.",
-                #                 parameters={
-                #                     "from_number": aws_bedrock.CfnAgent.ParameterDetailProperty(
-                #                         type="string",
-                #                         description="from_number for the transaction",
-                #                         required=True,
-                #                     ),
-                #                     "receiver_key": aws_bedrock.CfnAgent.ParameterDetailProperty(
-                #                         type="string",
-                #                         description="receiver_key for the transaction",
-                #                         required=True,
-                #                     ),
-                #                     "amount": aws_bedrock.CfnAgent.ParameterDetailProperty(
-                #                         type="string",
-                #                         description="amount for the transaction",
-                #                         required=True,
-                #                     ),
-                #                 },
-                #             )
-                #         ]
-                #     ),
-                # ),
-                # aws_bedrock.CfnAgent.AgentActionGroupProperty(
-                #     action_group_name="ConfirmTransaction",
-                #     description="A function that is able to confirm a transaction for the user with the 'from_number', 'receiver_key' and 'amount' inputs.",
-                #     action_group_executor=aws_bedrock.CfnAgent.ActionGroupExecutorProperty(
-                #         lambda_=self.lambda_action_group_transactions.function_arn,
-                #     ),
-                #     function_schema=aws_bedrock.CfnAgent.FunctionSchemaProperty(
-                #         functions=[
-                #             aws_bedrock.CfnAgent.FunctionProperty(
-                #                 name="ConfirmTransaction",
-                #                 # the properties below are optional
-                #                 description="Function that is able to confirm a transaction for the user with the 'from_number', 'receiver_key' and 'amount' inputs.",
-                #                 parameters={
-                #                     "from_number": aws_bedrock.CfnAgent.ParameterDetailProperty(
-                #                         type="string",
-                #                         description="from_number for the transaction",
-                #                         required=True,
-                #                     ),
-                #                     "receiver_key": aws_bedrock.CfnAgent.ParameterDetailProperty(
-                #                         type="string",
-                #                         description="receiver_key for the transaction",
-                #                         required=True,
-                #                     ),
-                #                     "amount": aws_bedrock.CfnAgent.ParameterDetailProperty(
-                #                         type="string",
-                #                         description="amount for the transaction",
-                #                         required=True,
-                #                     ),
-                #                 },
-                #             )
-                #         ]
-                #     ),
-                # ),
-                # aws_bedrock.CfnAgent.AgentActionGroupProperty(
-                #     action_group_name="ConnectWithAssistant",
-                #     description="A function that is able to connect with an assistant in case that an advanced request occurs. Uses from input the 'from_number'.",
-                #     action_group_executor=aws_bedrock.CfnAgent.ActionGroupExecutorProperty(
-                #         lambda_=self.lambda_action_group_connect_with_assistant.function_arn,
-                #     ),
-                #     function_schema=aws_bedrock.CfnAgent.FunctionSchemaProperty(
-                #         functions=[
-                #             aws_bedrock.CfnAgent.FunctionProperty(
-                #                 name="ConnectWithAssistant",
-                #                 # the properties below are optional
-                #                 description="Function that is able to connect with an assistant in case that an advanced request occurs. Uses from input the 'from_number'.",
-                #                 parameters={
-                #                     "from_number": aws_bedrock.CfnAgent.ParameterDetailProperty(
-                #                         type="string",
-                #                         description="from_number of the user",
-                #                         required=True,
-                #                     ),
-                #                 },
-                #             )
-                #         ]
-                #     ),
-                # ),
-                # aws_bedrock.CfnAgent.AgentActionGroupProperty(
-                #     action_group_name="GetExtraInformation",
-                #     description="A function that is able to connect with an assistant in case that an advanced request occurs. Uses from input the 'from_number'.",
-                #     action_group_executor=aws_bedrock.CfnAgent.ActionGroupExecutorProperty(
-                #         lambda_=self.lambda_action_group_get_extra_information.function_arn,
-                #     ),
-                #     function_schema=aws_bedrock.CfnAgent.FunctionSchemaProperty(
-                #         functions=[
-                #             aws_bedrock.CfnAgent.FunctionProperty(
-                #                 name="GetExtraInformation",
-                #                 # the properties below are optional
-                #                 description="Function that is able to get additional information for the user based on the Bank's KBs.",
-                #                 parameters={
-                #                     "requested_information": aws_bedrock.CfnAgent.ParameterDetailProperty(
-                #                         type="string",
-                #                         description="The extra 'requested_information' from the user.",
-                #                         required=True,
-                #                     ),
-                #                 },
-                #             )
-                #         ]
-                #     ),
-                # ),
             ],
         )
+
+        # ------------------------------------
+        # Bedrock child agent 4 (Transactions)
+        # ------------------------------------
+        agent_4_instructions = """
+        You are a specialized agent in Transactions. Is able to start transactions with <StartTransaction> and confirm transactions with <ConfirmTransaction>."
+
+        1. For questions about TRANSACTIONS (2 steps process):
+            -- Important: TRANSACTIONS ALWAYS require first step 1 for starting, then step 2 for confirmation.
+            - STEP 1)
+                - Obtain the 'receiver_key' (llave Bre-B) and 'amount' from the user. If not provided, ask for them.
+                - Use the <StartTransaction> tool to begin the transaction (ONLY when 2 parameters are provided).
+                - Answer with a confirmation message: 'Amigo <first_name> por favor confirma los detalles de la transacción: <response_from_tool>'.
+            - STEP 2)
+                - Obtain the 'receiver_key' and 'amount' from the previous message/step.
+                - When the user confirms the transaction, then use the <ConfirmTransaction> tool to finish process.
+                - Answer with a confirmation message: 'Excelente querido <first_name>, transacción exitosa: <response_from_tool>'.
+        """
+        self.bedrock_agent_4 = aws_bedrock.CfnAgent(
+            self,
+            f"BedrockAgent{self.agents_version}Transactions",
+            agent_name=f"{self.main_resources_name}-agent-{self.agents_version}-transactions",
+            agent_resource_role_arn=self.bedrock_agent_role.role_arn,
+            description="Agent specialized in bank rewards. Is able to start transactions with <GetTransactions> and confirm them with <ConfirmTransaction>.",
+            foundation_model=self.bedrock_llm_model_id,
+            instruction=agent_4_instructions,
+            auto_prepare=True,
+            action_groups=[
+                aws_bedrock.CfnAgent.AgentActionGroupProperty(
+                    action_group_name="StartTransaction",
+                    description="A function that is able to start a transaction for the user with the 'receiver_key' and 'amount' inputs.",
+                    action_group_executor=aws_bedrock.CfnAgent.ActionGroupExecutorProperty(
+                        lambda_=self.lambda_action_groups.function_arn,
+                    ),
+                    function_schema=aws_bedrock.CfnAgent.FunctionSchemaProperty(
+                        functions=[
+                            aws_bedrock.CfnAgent.FunctionProperty(
+                                name="StartTransaction",
+                                # the properties below are optional
+                                description="Function that is able to start a transaction for the user with the 'receiver_key' and 'amount' inputs.",
+                                parameters={
+                                    # "from_number": aws_bedrock.CfnAgent.ParameterDetailProperty(
+                                    #     type="string",
+                                    #     description="from_number for the transaction",
+                                    #     required=True,
+                                    # ),
+                                    "receiver_key": aws_bedrock.CfnAgent.ParameterDetailProperty(
+                                        type="string",
+                                        description="receiver_key for the transaction",
+                                        required=True,
+                                    ),
+                                    "amount": aws_bedrock.CfnAgent.ParameterDetailProperty(
+                                        type="string",
+                                        description="amount for the transaction",
+                                        required=True,
+                                    ),
+                                },
+                            )
+                        ]
+                    ),
+                ),
+                aws_bedrock.CfnAgent.AgentActionGroupProperty(
+                    action_group_name="ConfirmTransaction",
+                    description="A function that is able to confirm a transaction for the user with the 'receiver_key' and 'amount' inputs.",
+                    action_group_executor=aws_bedrock.CfnAgent.ActionGroupExecutorProperty(
+                        lambda_=self.lambda_action_groups.function_arn,
+                    ),
+                    function_schema=aws_bedrock.CfnAgent.FunctionSchemaProperty(
+                        functions=[
+                            aws_bedrock.CfnAgent.FunctionProperty(
+                                name="ConfirmTransaction",
+                                # the properties below are optional
+                                description="Function that is able to confirm a transaction for the user with the 'receiver_key' and 'amount' inputs.",
+                                parameters={
+                                    # "from_number": aws_bedrock.CfnAgent.ParameterDetailProperty(
+                                    #     type="string",
+                                    #     description="from_number for the transaction",
+                                    #     required=True,
+                                    # ),
+                                    "receiver_key": aws_bedrock.CfnAgent.ParameterDetailProperty(
+                                        type="string",
+                                        description="receiver_key for the transaction",
+                                        required=True,
+                                    ),
+                                    "amount": aws_bedrock.CfnAgent.ParameterDetailProperty(
+                                        type="string",
+                                        description="amount for the transaction",
+                                        required=True,
+                                    ),
+                                },
+                            )
+                        ]
+                    ),
+                ),
+            ],
+        )
+
+        # Create Bedrock Aliases for the Child Agents
+        cfn_agent_alias_1 = aws_bedrock.CfnAgentAlias(
+            self,
+            f"BedrockAgentAlias1={self.agents_version}",
+            agent_alias_name=f"agent-alias-1-crud-products-{self.agents_version}",
+            agent_id=self.bedrock_agent_1.attr_agent_id,
+            description="bedrock agent alias 1 (crud products)",
+        )
+        cfn_agent_alias_1.node.add_dependency(self.bedrock_agent_1)
+
+        cfn_agent_alias_2 = aws_bedrock.CfnAgentAlias(
+            self,
+            f"BedrockAgentAlias2={self.agents_version}",
+            agent_alias_name=f"agent-alias-2-crud-products-{self.agents_version}",
+            agent_id=self.bedrock_agent_2.attr_agent_id,
+            description="bedrock agent alias 2 (crud products)",
+        )
+        cfn_agent_alias_2.node.add_dependency(self.bedrock_agent_2)
+
+        cfn_agent_alias_3 = aws_bedrock.CfnAgentAlias(
+            self,
+            f"BedrockAgentAlias3={self.agents_version}",
+            agent_alias_name=f"agent-alias-3-crud-products-{self.agents_version}",
+            agent_id=self.bedrock_agent_3.attr_agent_id,
+            description="bedrock agent alias 3 (crud products)",
+        )
+        cfn_agent_alias_3.node.add_dependency(self.bedrock_agent_3)
+
+        cfn_agent_alias_4 = aws_bedrock.CfnAgentAlias(
+            self,
+            f"BedrockAgentAlias4={self.agents_version}",
+            agent_alias_name=f"agent-alias-4-crud-products-{self.agents_version}",
+            agent_id=self.bedrock_agent_4.attr_agent_id,
+            description="bedrock agent alias 4 (crud products)",
+        )
+        cfn_agent_alias_4.node.add_dependency(self.bedrock_agent_4)
 
         # Create SSM Parameters for the agent alias to use in the Lambda functions
         # Note: intentionally don't set it as part of the WORKSHOP MANUAL steps

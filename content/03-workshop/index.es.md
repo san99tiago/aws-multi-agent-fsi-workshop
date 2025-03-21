@@ -13,10 +13,10 @@ weight: 20
 
 Nuestra solución de chatbot cuenta con **más de 5 agentes especializados**, cada uno aportando capacidades únicas:
 
-- **Detalles de Productos**: Obtiene y muestra los últimos productos bancarios.
+- **Operaciones de Producto**: Visualiza productos financieros y abre nuevos productos (créditos).
 - **Gestión de Transacciones**: Maneja transferencias y pagos seguros.
 - **Generación de Certificados**: Genera y comparte certificados bancarios oficiales.
-- **Gestión de Crédito**: Abre y gestiona líneas de crédito para clientes.
+- **Puntos de Recompensa**: Administra y visualiza los puntos de recomensa del banco.
 - **Atención al Cliente**: Responde consultas comunes y guía a los usuarios.
 
 ## 🔑 Características Principales

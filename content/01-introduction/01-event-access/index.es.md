@@ -1,5 +1,5 @@
 ---
-title: "Pre-Requisitos"
+title: "Acceso Workshop"
 weight: 11
 ---
 

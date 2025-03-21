@@ -13,10 +13,10 @@ Welcome to the RUFUS Bank Multi-Agent Chatbot Workshop! This hands-on workshop d
 
 Our chatbot solution features **5+ specialized agents**, each bringing unique capabilities to the table:
 
-- **Product Details**: Fetch and display the latest banking products.
+- **Product Operations**: Fetch, display and create banking products such as credits.
 - **Transaction Management**: Handle secure fund transfers and payments.
 - **Certificate Generation**: Generate and share official bank certificates.
-- **Credit Management**: Open and manage credit lines for customers.
+- **Rewards System**: Fetch customer's rewards points for the Bank internal points.
 - **Customer Support**: Answer common queries and guide users.
 
 ## 🔑 Key Features

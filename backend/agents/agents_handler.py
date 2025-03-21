@@ -8,7 +8,10 @@ from agents.crud_user_products.entrypoint import (
     action_group_fetch_user_products,
     action_group_create_credit,
 )
-
+from agents.transactions.entrypoint import (
+    action_group_start_transaction,
+    action_group_confirm_transaction,
+)
 
 logger = custom_logger()
 
@@ -30,6 +33,10 @@ def lambda_handler(event, context):
         results = action_group_fetch_user_products(parameters)
     elif tool == "CreateCredit" or tool == "<CreateCredit>":
         results = action_group_create_credit(parameters)
+    elif tool == "StartTransaction" or tool == "<StartTransaction>":
+        results = action_group_start_transaction(parameters)
+    elif tool == "ConfirmTransaction" or tool == "<ConfirmTransaction>":
+        results = action_group_confirm_transaction(parameters)
     else:
         raise ValueError(f"Action Group <{tool}> not supported.")
 

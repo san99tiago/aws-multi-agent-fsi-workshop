@@ -64,9 +64,9 @@ def load_data():
         {
             "PK": f"USER#{PHONE_NUMBER_1}",
             "SK": "REWARDS#",
-            "product_name": "Puntos Colombia",
+            "product_name": "Rufus Points",
             "last_digits": "N/A",
-            "details": "You have 1500 Puntos Colombia. Puntos Colombia are redeemable rewards to use on everyday tasks",
+            "details": "You have 1500 Rufus Points. Rufus Points are redeemable rewards to use on everyday tasks",
             "status": "ACTIVE",
         },
     ]

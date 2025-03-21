@@ -1,5 +1,5 @@
 ---
-title: "Pre-Requisites"
+title: "Event Access"
 weight: 11
 ---
 
