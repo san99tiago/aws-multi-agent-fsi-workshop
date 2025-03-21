@@ -1,6 +1,6 @@
 ---
 title: "Workshop"
-weight: 20
+weight: 30
 ---
 
 # Workshop Overview (High Level) 🏦

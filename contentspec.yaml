@@ -61,10 +61,10 @@ awsAccountConfig:
     minAccessibleRegions: 1
 
     # The maximum number of regions an event operator can choose. Valid range: 1 to 3
-    maxAccessibleRegions: 1
-    
+    maxAccessibleRegions: 2
+
     # [OPTIONAL] Regions defined under `accessibleRegions` are regions that can be made accessible to Participants.
-    # Note: 
+    # Note:
     #  - No resources will be deployed to these regions by Workshop Studio.
     #  - If deployableRegions are defined, the deployment region is accessible by participants without additional configuration.
     accessibleRegions:
@@ -84,3 +84,4 @@ awsAccountConfig:
       # Use this sparingly and only when strictly required for the Workshop content, as this will prevent the content from being run in any other region.
       required:
         - us-east-1
+

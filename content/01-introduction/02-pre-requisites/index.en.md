@@ -34,8 +34,9 @@ We need to enable access to models for this workshop:
 Then, enable only the following models:
 
 - `Nova Pro`
+- `Titan Text Embeddings V2`
 
-![Pre-Requisites 05](/static/01-images/pre-requisites-05.png)
+![Pre-Requisites 05](/static/01-images/pre-requisites-05.gif)
 
 Wait for few seconds in the page until Access Status for these models are changed to Access Granted. You might need to refresh the page to see all the changes.
 

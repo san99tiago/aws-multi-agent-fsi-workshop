@@ -3,7 +3,28 @@
   "Statement": [
     {
       "Effect": "Allow",
-      "Action": "*",
+      "Action": [
+        "lambda:*",
+        "apigateway:*",
+        "s3:*",
+        "bedrock:*",
+        "cloudwatch:*",
+        "cloudfront:*",
+        "ssm:GetParameter",
+        "ssm:PutParameter",
+        "ssm:DeleteParameter",
+        "ssm:GetParametersByPath",
+        "ssm:DescribeParameters",
+        "ssm:GetParameterHistory",
+        "es:*",
+        "dynamodb:*",
+        "cloudformation:Describe*",
+        "cloudformation:EstimateTemplateCost",
+        "cloudformation:Get*",
+        "cloudformation:List*",
+        "cloudformation:ValidateTemplate",
+        "cloudformation:Detect*"
+      ],
       "Resource": "*"
     }
   ]
