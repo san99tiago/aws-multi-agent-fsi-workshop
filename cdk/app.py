@@ -58,10 +58,10 @@ ChatbotFrontendStack(
 )
 
 
-add_tags_to_app(
-    app,
-    MAIN_RESOURCES_NAME,
-    DEPLOYMENT_ENVIRONMENT,
-)
+# add_tags_to_app(
+#     app,
+#     MAIN_RESOURCES_NAME,
+#     DEPLOYMENT_ENVIRONMENT,
+# )
 
 app.synth()
