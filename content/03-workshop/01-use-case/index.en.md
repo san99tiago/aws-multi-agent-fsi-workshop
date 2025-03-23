@@ -73,7 +73,7 @@ Implementation of a multi-agent chatbot system with five specialized functionali
 - Strict avoidance of:
   - Political discussions
   - Competitor comparisons
-  - LGBTI topics
+  - Topics related to sexuality
   - Handling of angry customer situations
   - Unverified information
 

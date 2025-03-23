@@ -19,6 +19,9 @@
         "es:*",
         "aoss:*",
         "dynamodb:*",
+        "iam:CreatePolicy",
+        "iam:CreatePolicyVersion",
+        "iam:DeletePolicyVersion",
         "sagemaker:ListHubContents",
         "cloudformation:Describe*",
         "cloudformation:EstimateTemplateCost",
@@ -31,8 +34,11 @@
     },
     {
       "Effect": "Allow",
-      "Action": "iam:PassRole",
-      "Resource": "arn:aws:iam::*:role/BedrockWorkshopExecutionRole"
+      "Action": ["iam:PassRole", "iam:AttachRolePolicy"],
+      "Resource": [
+        "arn:aws:iam::*:role/BedrockWorkshopExecutionRole",
+        "arn:aws:iam::*:role/fsi-multi-agents-bedrock-agent-role"
+      ]
     }
   ]
 }

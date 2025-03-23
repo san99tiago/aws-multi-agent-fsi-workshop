@@ -73,7 +73,7 @@ Implementación de un sistema chatbot multi-agente con cinco funcionalidades esp
 - Evitar estrictamente:
   - Discusiones políticas
   - Comparaciones con competidores
-  - Temas LGBTI
+  - Temas relacionados a sexualidad
   - Manejo de clientes enojados
   - Información no verificada
 

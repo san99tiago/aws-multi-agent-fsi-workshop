@@ -67,7 +67,7 @@ Amazon Bedrock Agents are software entities that use foundation models (FMs) rea
 
 - Collaboration between specialized agents through orchestration
 - Coordinated task distribution
-- Example: Complete banking system with supervisor and specialized agents
+- Example: troubleshooting supervisor assistant that is able to interact with multiple specialized agents
 
 ## High-Level Architecture of an Agentic System in Bedrock 🏗️
 

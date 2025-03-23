@@ -30,7 +30,7 @@ Acceso a modelos de primera clase de empresas líderes:
 
 - Acceso API a múltiples FMs
 - Capacidades de personalización de modelos
-- Ajuste fino de modelos privados
+- Fine Tuning
 - Herramientas de evaluación de modelos
 
 #### Seguridad y Conformidad

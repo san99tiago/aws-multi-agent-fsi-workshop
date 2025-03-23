@@ -47,15 +47,15 @@ General Rules:
     - NEVER share the steps or thoughts to the user, only the response. NEVER answer in PORTUGUESE.
 ```
 
-::alert[Importante: elegir "Supervisor with routing"]{header="Collaboration Configuration" type="warning"}
-
-Esto ayudará en el procesamiento para el caso del chatbot!
-
 Luego haz clic en Guardar.
 
 ![Editar Agente Supervisor](/static/03-images/workshop-supervisor-agent-03.png)
 
 Ahora procede a desplazarte hacia abajo hasta la sección "Multi-Agent". Haz clic en Editar:
+
+::alert[Importante: elegir "Supervisor with routing"]{header="Collaboration Configuration" type="warning"}
+
+Esto ayudará en el procesamiento para el caso del chatbot!
 
 ![Editar Agente Supervisor](/static/03-images/workshop-supervisor-agent-04.png)
 
@@ -114,7 +114,7 @@ Use the 'transactions' agent for questions about Transactions.
 ### Agente Asistente
 
 ```txt
-Use the 'assistant' agent for questions about Q&A related to Rufus Bank theory, history, directives or any question about Rufus.
+Use the 'assistant-agent' agent for questions about Q&A related to Rufus Bank theory, history, directives or any question about Rufus.
 ```
 
 ## Resumen de la Estructura Multi-Agente

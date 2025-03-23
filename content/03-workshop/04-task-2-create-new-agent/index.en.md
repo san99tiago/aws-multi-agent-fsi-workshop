@@ -24,7 +24,7 @@ In order to create the Assistant Agent, we will have to execute the following st
 
 Go to AWS Console and create and S3 Bucket. The name must be Unique:
 
-- Bucket Name: `assets-rag-{RANDOM_LONG_NAME}` (Make sure to have an unique name for the S3 Bucket)
+- Bucket Name: `assets-rag-{AWS_ACCOUNT_ID}` (Make sure to have an unique name for the S3 Bucket)
 
 ![Create S3 Bucket](/static/03-images/workshop-new-agent-02.gif)
 
@@ -46,9 +46,13 @@ Go to "Amazon Bedrock" service, and enter "Knowledge Bases":
 
 ![Create Bedrock Knowledge Base](/static/03-images/workshop-new-agent-04.png)
 
+## Create Bedrock KB Data Source for Rufus Bank
+
 - Select the `Knowledge Base with Vector Store`.
 - Name: `knowledge-base-rufus-bank`
-- IAM Permissions: `Create and use a new service role` (default)
+- IAM Permissions: Use an existing service role `BedrockWorkshopExecutionRole`
+
+::alert[Make sure to pick the existing role for the workshop]{header="Role selection is important" type="warning"}
 
 ![Add Bedrock KB Details](/static/03-images/workshop-new-agent-05.gif)
 
@@ -56,6 +60,7 @@ Go to "Amazon Bedrock" service, and enter "Knowledge Bases":
 - Select the S3 bucket that has `rag` in the name.
 - Choose default settings for chunking strategy.
 - Select: `Amazon OpenSearch Serverless` (default)
+- Select: `Titan Text Embeddings V2` for Embeddings
 - Click on `Create Knowledge Base` (finish creation)
 
 ![Add Bedrock KB Details](/static/03-images/workshop-new-agent-06.gif)
@@ -92,7 +97,10 @@ Click on "Edit in Agent Builder":
 Proceed to fill the details as follow:
 
 - Name: `assistant-agent` (or any similar name)
-- Check: Create and use a new service role
+- IAM Permissions: Use an existing service role `fsi-multi-agents-bedrock-agent-role`
+
+::alert[For production-grade agents, use different roles and each with least privilege permissions]{header="Important consideration!" type="warning"}
+
 - Model: `Nova Pro - 1.0 - On-demand"
 - Instructions:
 

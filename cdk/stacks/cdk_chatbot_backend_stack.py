@@ -275,6 +275,67 @@ class ChatbotBackendStack(Stack):
             )
         )
 
+        # Role used for the Bedrock KB/RAG creation (Workshop)
+        bedrock_workshop_execution_role = aws_iam.Role(
+            self,
+            "BedrockWorkshopExecutionRole",
+            role_name="BedrockWorkshopExecutionRole",
+            assumed_by=aws_iam.ServicePrincipal("bedrock.amazonaws.com"),
+            description="IAM role for Bedrock workshop execution",
+        )
+
+        # Add trust policy condition
+        bedrock_workshop_execution_role.assume_role_policy.add_statements(
+            aws_iam.PolicyStatement(
+                effect=aws_iam.Effect.ALLOW,
+                actions=["sts:AssumeRole"],
+                principals=[aws_iam.ServicePrincipal("bedrock.amazonaws.com")],
+                conditions={
+                    "StringEquals": {"aws:SourceAccount": self.account},
+                    "ArnLike": {
+                        "aws:SourceArn": f"arn:aws:bedrock:*:{self.account}:knowledge-base/*"
+                    },
+                },
+            )
+        )
+
+        # Add permissions for Bedrock
+        bedrock_permissions_policy = aws_iam.Policy(
+            self,
+            "BedrockInvokeModelPolicy",
+            statements=[
+                aws_iam.PolicyStatement(
+                    effect=aws_iam.Effect.ALLOW,
+                    actions=["bedrock:InvokeModel"],
+                    resources=[
+                        "arn:aws:bedrock:*::foundation-model/amazon.titan-embed-text-v2:0"
+                    ],
+                )
+            ],
+        )
+        bedrock_workshop_execution_role.attach_inline_policy(bedrock_permissions_policy)
+
+        # Add permissions for OpenSearch Serverless
+        opensearch_permissions_policy = aws_iam.Policy(
+            self,
+            "OpenSearchServerlessAPIAccessPolicy",
+            statements=[
+                aws_iam.PolicyStatement(
+                    effect=aws_iam.Effect.ALLOW,
+                    actions=["aoss:*"],
+                    resources=[f"arn:aws:aoss:*:{self.account}:collection/*"],
+                )
+            ],
+        )
+        bedrock_workshop_execution_role.attach_inline_policy(
+            opensearch_permissions_policy
+        )
+
+        # Attach S3 Full Access Managed Policy
+        bedrock_workshop_execution_role.add_managed_policy(
+            aws_iam.ManagedPolicy.from_aws_managed_policy_name("AmazonS3FullAccess")
+        )
+
     def create_bedrock_child_agents(self):
         """
         Method to create the Bedrock Agents at the lowest hierarchy level (child agents).
@@ -378,7 +439,7 @@ class ChatbotBackendStack(Stack):
             action_groups=[
                 aws_bedrock.CfnAgent.AgentActionGroupProperty(
                     action_group_name="GenerateCertificates",
-                    description="A function that is able to generate the user certificates from an input.",
+                    description="A function that is able to generate the user certificates.",
                     action_group_executor=aws_bedrock.CfnAgent.ActionGroupExecutorProperty(
                         lambda_=self.lambda_action_groups.function_arn,
                     ),
@@ -387,7 +448,7 @@ class ChatbotBackendStack(Stack):
                             aws_bedrock.CfnAgent.FunctionProperty(
                                 name="GenerateCertificates",
                                 # the properties below are optional
-                                description="Function to generate user certificates or bank certificates based on the input",
+                                description="Function to generate user certificates or bank certificates.",
                                 # parameters={
                                 #     "from_number": aws_bedrock.CfnAgent.ParameterDetailProperty(
                                 #         type="string",
@@ -547,7 +608,7 @@ class ChatbotBackendStack(Stack):
         cfn_agent_alias_1 = aws_bedrock.CfnAgentAlias(
             self,
             f"BedrockAgentAlias1={self.agents_version}",
-            agent_alias_name=f"agent-alias-1-crud-products-{self.agents_version}",
+            agent_alias_name=f"alias-1-{self.agents_version}",
             agent_id=self.bedrock_agent_1.attr_agent_id,
             description="bedrock agent alias 1 (crud products)",
         )
@@ -556,7 +617,7 @@ class ChatbotBackendStack(Stack):
         cfn_agent_alias_2 = aws_bedrock.CfnAgentAlias(
             self,
             f"BedrockAgentAlias2={self.agents_version}",
-            agent_alias_name=f"agent-alias-2-crud-products-{self.agents_version}",
+            agent_alias_name=f"alias-2-{self.agents_version}",
             agent_id=self.bedrock_agent_2.attr_agent_id,
             description="bedrock agent alias 2 (crud products)",
         )
@@ -565,7 +626,7 @@ class ChatbotBackendStack(Stack):
         cfn_agent_alias_3 = aws_bedrock.CfnAgentAlias(
             self,
             f"BedrockAgentAlias3={self.agents_version}",
-            agent_alias_name=f"agent-alias-3-crud-products-{self.agents_version}",
+            agent_alias_name=f"alias-3-{self.agents_version}",
             agent_id=self.bedrock_agent_3.attr_agent_id,
             description="bedrock agent alias 3 (crud products)",
         )
@@ -574,7 +635,7 @@ class ChatbotBackendStack(Stack):
         cfn_agent_alias_4 = aws_bedrock.CfnAgentAlias(
             self,
             f"BedrockAgentAlias4={self.agents_version}",
-            agent_alias_name=f"agent-alias-4-crud-products-{self.agents_version}",
+            agent_alias_name=f"alias-4-{self.agents_version}",
             agent_id=self.bedrock_agent_4.attr_agent_id,
             description="bedrock agent alias 4 (crud products)",
         )

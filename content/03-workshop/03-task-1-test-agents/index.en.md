@@ -87,8 +87,8 @@ Agent Capabilities:
 
 In order to test the agent, go to the Bedrock Playground and ask it questions similar to:
 
-- `Can you generate a bank certificate for my bank products?`
-- `Can I generate a Bank PDF Certificate?`
+- `Generate bank certificate`
+- `Get certificate`
 
 Example for testing:
 

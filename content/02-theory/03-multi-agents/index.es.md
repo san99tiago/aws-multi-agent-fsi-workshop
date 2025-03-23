@@ -1,77 +1,64 @@
 ---
-title: "Multi-Agent Theory"
+title: "Teoría Multi-Agente"
 weight: 23
 ---
 
-# Multi-Agent Collaboration in Amazon Bedrock 🤝
+# Colaboración Multi-Agente en Amazon Bedrock 🤝
 
-## Evolution from Single to Multi-Agent Systems 📈
+## Evolución de Sistemas Mono-Agente a Multi-Agente 📈
 
-### Single-Agent Limitations
+### Limitaciones del Agente Único
 
-Traditional single-agent architectures face several challenges:
+Las arquitecturas tradicionales de agente único enfrentan varios desafíos:
 
-- **Tool Selection**: Limited decision-making capacity
-- **Workflow Management**: Difficulty handling complex processes
-- **Prompt Engineering**: Increasing complexity with task scope
-- **Cost Efficiency**: Suboptimal resource utilization
-- **Scalability**: Bottlenecks in handling multiple tasks
+- **Selección de Herramientas**: Capacidad limitada de toma de decisiones
+- **Gestión de Flujos de Trabajo**: Dificultad para manejar procesos complejos
+- **Ingeniería de Prompts**: Complejidad creciente con el alcance de las tareas
+- **Eficiencia de Costos**: Utilización subóptima de recursos
+- **Escalabilidad**: Cuellos de botella en el manejo de múltiples tareas
 
-## Multi-Agent Architecture 🏗️
+## Arquitectura Multi-Agente 🏗️
 
-### Core Components
+### Componentes Principales
 
-1. **Supervisor Agent**
+1. **Agente Supervisor**
 
-   - Orchestrates task distribution
-   - Manages agent communication
-   - Ensures task completion
-   - Handles error scenarios
+   - Orquesta la distribución de tareas
+   - Gestiona la comunicación entre agentes
+   - Asegura la finalización de tareas
+   - Maneja escenarios de error
 
-2. **Specialized Agents**
-   - Focus on specific domains
-   - Execute dedicated tasks
-   - Maintain context within scope
-   - Report back to supervisor
+2. **Agentes Especializados**
+   - Se centran en dominios específicos
+   - Ejecutan tareas dedicadas
+   - Mantienen el contexto dentro del alcance
+   - Reportan al supervisor
 
-## Advantages of Multi-Agent Systems
+## Ventajas de los Sistemas Multi-Agente
 
-Multi-agent systems help divide and conquer complex tasks by distributing work across specialized agents. These systems deliver significant advantages for tackling intricate, multi-step workflows and scaling AI-driven applications more effectively:
+Los sistemas multi-agente ayudan a dividir y conquistar tareas complejas distribuyendo el trabajo entre agentes especializados. Estos sistemas ofrecen ventajas significativas para abordar flujos de trabajo complejos y escalar aplicaciones impulsadas por IA de manera más efectiva:
 
-- **Distributed problem-solving**: Complex tasks can be broken down into smaller subtasks handled by specialized agents, leading to more efficient and effective solutions.
-- **Specialization benefits**: Each agent can focus on specific domains where they excel, improving overall accuracy through targeted expertise.
-- **Enhanced extensibility**: As problem scope increases, new agents can be added to extend system capabilities rather than trying to optimize a monolithic agent.
-- **Cost optimization**: Appropriate models can be deployed based on task complexity, using powerful models only when necessary to maximize resource efficiency.
-- **Parallel processing**: Multiple agents can work simultaneously on different aspects of a problem, accelerating solution delivery.
-- **Reusable components**: Specialist agents can be reused by other teams across the organization, maximizing return on development investment.
+- Resolución distribuida de problemas: Las tareas complejas pueden desglosarse en subtareas más pequeñas manejadas por agentes especializados, llevando a soluciones más eficientes y efectivas.
+- Beneficios de la especialización: Cada agente puede enfocarse en dominios específicos donde sobresale, mejorando la precisión general a través de experiencia dirigida.
+- Extensibilidad mejorada: A medida que aumenta el alcance del problema, se pueden añadir nuevos agentes para extender las capacidades del sistema en lugar de intentar optimizar un agente monolítico.
+- Optimización de costos: Se pueden implementar modelos apropiados según la complejidad de la tarea, utilizando modelos potentes solo cuando sea necesario para maximizar la eficiencia de recursos.
+- Procesamiento paralelo: Múltiples agentes pueden trabajar simultáneamente en diferentes aspectos de un problema, acelerando la entrega de soluciones.
+- Componentes reutilizables: Los agentes especialistas pueden ser reutilizados por otros equipos en la organización, maximizando el retorno de la inversión en desarrollo.
 
-### Implementation Challenges
+Si bien estas ventajas son convincentes, los sistemas multi-agente también presentan sus propios desafíos:
 
-While these advantages are compelling, multi-agent systems do introduce their own set of challenges:
+- Más componentes para desarrollar: Cada agente especializado requiere esfuerzos separados de desarrollo y mantenimiento.
+- Complejidad de orquestación: Coordinar múltiples agentes requiere sistemas sofisticados de gestión.
 
-- **More components to develop**: Each specialized agent requires separate development and maintenance efforts.
-- **Orchestration complexity**: Coordinating multiple agents demands sophisticated management systems.
+## Arquitectura de Ejemplo para Solución Multi-Agente
 
-## Example Architecture for Multi-Agent Solution
+![Arquitectura Multi-Agente](/static/02-images/theory-multi-agents-01.png)
 
-![Multi-Agent Architecture](/static/02-images/theory-multi-agents-01.png)
+Como se puede ver en la imagen anterior, la Arquitectura Multi-Agente tiene:
 
-As shown in the previous image, the Multi-Agent Architecture consists of:
+- Un Agente Supervisor, encargado de la Orquestación y Colaboración de los Agentes Hijos.
+- Agentes Hijos, encargados de tareas especializadas con la(s) herramienta(s) requerida(s).
+- Cada agente puede ser desarrollado/creado con LLMs independientes, por lo que la selección de Opciones es posible.
+- Se pueden aplicar barandillas tanto a nivel de Agentes Hijos como a nivel de Supervisor.
 
-1. **Supervisor Agent**
-
-   - In charge of Orchestration and Collaboration of Child Agents
-   - Manages overall workflow and communication
-
-2. **Child Agents**
-
-   - Handle specialized tasks with required tool(s)
-   - Can be developed with independent LLMs for optimal performance
-
-3. **Key Features**
-   - Choice selection possible through independent LLM usage
-   - Guardrails applicable at both Child Agent and Supervisor levels
-
-::alert[Amazon Bedrock's managed multi-agent collaboration helps address these challenges by simplifying orchestration and reducing implementation complexity.]{header="Bedrock Multi-Agent Collaboration!" type="success"}
-
----
+::alert[La colaboración multi-agente gestionada de Amazon Bedrock ayuda a abordar estos desafíos simplificando la orquestación y reduciendo la complejidad de implementación.]{header="¡Colaboración Multi-Agente de Bedrock!" type="success"}

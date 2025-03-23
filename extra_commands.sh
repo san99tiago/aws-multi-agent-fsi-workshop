@@ -3,7 +3,7 @@
 ########################################
 # Prepare content for workshop
 ########################################
-zip -r all_content.zip ./* -x "./.venv/*" "*/node_modules/*" "*/dist/*" "./cdk.out/*" "*/python/*" "*/.angular/*" "./temp/*" "*/__pycache__/*"
+zip -r all_content.zip ./* -x "./.venv/*" "*/node_modules/*" "*/dist/*" "./static/*" "./cdk.out/*" "./content/*" "*/python/*" "*/.angular/*" "./temp/*" "*/__pycache__/*"
 
 
 ########################################

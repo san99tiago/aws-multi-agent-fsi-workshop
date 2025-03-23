@@ -24,7 +24,7 @@ Para crear el Agente Asistente, necesitaremos ejecutar los siguientes pasos:
 
 Ve a la Consola AWS y crea un Bucket S3. El nombre debe ser único:
 
-- Nombre del Bucket: `assets-rag-{NOMBRE_LARGO_ALEATORIO}` (Asegúrate de tener un nombre único para el Bucket S3)
+- Nombre del Bucket: `assets-rag-{AWS_ACCOUNT_ID}` (Asegúrate de tener un nombre único para el Bucket S3)
 
 ![Crear Bucket S3](/static/03-images/workshop-new-agent-02.gif)
 
@@ -46,16 +46,21 @@ Ve al servicio "Amazon Bedrock" y entra en "Knowledge Bases":
 
 ![Crear Base de Conocimientos Bedrock](/static/03-images/workshop-new-agent-04.png)
 
+## Crear el DataSource para la Base de Conocimientos
+
 - Selecciona `Knowledge Base with Vector Store`.
 - Nombre: `knowledge-base-rufus-bank`
-- Permisos IAM: `Create and use a new service role` (por defecto)
+- Permisos IAM: Usar un rol existente `BedrockWorkshopExecutionRole`
+
+::alert[Asegúrate de usar el mismo rol para el workshop]{header="Selección del rol importante!" type="warning"}
 
 ![Agregar Detalles de KB Bedrock](/static/03-images/workshop-new-agent-05.gif)
 
 - Selecciona el nombre: `knowledge-base-rufus`
-- Selecciona el bucket S3 que tiene `rag` en el nombre.
-- Elige la configuración predeterminada para la estrategia de fragmentación.
+- Selecciona el bucket S3 que tiene `rag` en el nombre
+- Elige la configuración predeterminada para la estrategia de fragmentación
 - Selecciona: `Amazon OpenSearch Serverless` (por defecto)
+- Selecciona: `Titan Text Embeddings V2` en Embeddings
 - Haz clic en `Create Knowledge Base` (finalizar creación)
 
 ![Agregar Detalles de KB Bedrock](/static/03-images/workshop-new-agent-06.gif)
@@ -71,7 +76,6 @@ Ahora procede a sincronizar los archivos desde la fuente de datos S3:
 En este punto, la Base de Conocimientos (Bedrock KB está lista para usar / interactuar). Algunas preguntas posibles son:
 
 - `¿Quién es el CEO de Rufus Bank?`
-- `¿Cuáles son los productos de Rufus Bank?`
 - `¿Quiénes son los directivos de Rufus?`
 - `¿Qué es Rufinator?`
 
@@ -92,7 +96,10 @@ Haz clic en "Edit in Agent Builder":
 Procede a llenar los detalles de la siguiente manera:
 
 - Nombre: `assistant-agent` (o cualquier nombre similar)
-- Marcar: Create and use a new service role
+- Permisos IAM: Usar un rol existente `fsi-multi-agents-bedrock-agent-role`
+
+::alert[Para despliegues productivos usa diferentes roles y todos con el principio de menor privilegio]{header="Consideración importante!" type="warning"}
+
 - Modelo: `Nova Pro - 1.0 - On-demand"
 - Instrucciones:
 
@@ -110,7 +117,7 @@ Luego haz clic en Guardar.
 Procede a agregar la KB al Agente:
 
 - Selecciona la KB creada en el paso anterior.
-- Agrega la instrucción: `Aprovechar la KB existente para resolver posibles preguntas sobre Rufus Bank.`
+- Agrega la instrucción: `Leverage existing KB to figure out possible questions about Rufus Bank.`
 
 ![Editar Agente](/static/03-images/workshop-new-agent-12.gif)
 

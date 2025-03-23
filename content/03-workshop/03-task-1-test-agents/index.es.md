@@ -87,8 +87,8 @@ Capacidades del Agente:
 
 Para probar el agente, ve al Playground de Bedrock y hazle preguntas similares a:
 
-- `¿Puedes generar un certificado bancario para mis productos bancarios?`
-- `¿Puedo generar un Certificado PDF Bancario?`
+- `Generar certificado bancario`
+- `Obtener certificado`
 
 Ejemplo de prueba:
 

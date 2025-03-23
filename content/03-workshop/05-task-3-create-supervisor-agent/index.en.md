@@ -20,7 +20,10 @@ The first step is to go to the Bedrock Service, and click on "Create Agent". The
 
 Now proceed to edit/configure the agent as follows:
 
-- Check: Create and use a new service role
+- IAM Permissions: Use an existing service role `fsi-multi-agents-bedrock-agent-role`
+
+::alert[For production-grade agents, use different roles and each with least privilege permissions]{header="Important consideration!" type="warning"}
+
 - Model: `Nova Pro - 1.0 - On-demand"
 - Instructions:
 
@@ -47,15 +50,15 @@ General Rules:
     - NEVER share the steps or thoughts to the user, only the response. NEVER answer in PORTUGUESE.
 ```
 
-::alert[Important: Choose "Supervisor with routing"]{header="Collaboration Configuration" type="warning"}
-
-This is a better fit for the Chatbot use case.
-
 Then Click Save.
 
 ![Supervisor Agent Edit](/static/03-images/workshop-supervisor-agent-03.png)
 
 Now proceed to scroll down to the "Multi-Agent" Section. Click on Edit:
+
+::alert[Important: Choose "Supervisor with routing"]{header="Collaboration Configuration" type="warning"}
+
+This is a better fit for the Chatbot use case.
 
 ![Supervisor Agent Edit](/static/03-images/workshop-supervisor-agent-04.png)
 
@@ -114,7 +117,7 @@ Use the 'transactions' agent for questions about Transactions.
 ### Assistant Agent
 
 ```txt
-Use the 'assistant' agent for questions about Q&A related to Rufus Bank theory, history, directives or any question about Rufus.
+Use the 'assistant-agent' agent for questions about Q&A related to Rufus Bank theory, history, directives or any question about Rufus.
 ```
 
 ## Recap of Multi-Agent Structure

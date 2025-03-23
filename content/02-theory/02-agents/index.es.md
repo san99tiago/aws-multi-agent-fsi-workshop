@@ -67,7 +67,7 @@ Amazon Bedrock Agents son entidades de software que utilizan el razonamiento de 
 
 - Colaboración entre agentes especializados mediante orquestación
 - Distribución de tareas coordinadas
-- Ejemplo: Sistema bancario completo con supervisor y agentes especializados
+- Ejemplo: agente supervisor de errores capaz de interactuar con múltiples agentes especializados
 
 ## Arquitectura Alto Nivel de un Sistema Agéntico en Bedrock 🏗️
 
