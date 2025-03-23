@@ -17,7 +17,9 @@
         "ssm:DescribeParameters",
         "ssm:GetParameterHistory",
         "es:*",
+        "aoss:*",
         "dynamodb:*",
+        "sagemaker:ListHubContents",
         "cloudformation:Describe*",
         "cloudformation:EstimateTemplateCost",
         "cloudformation:Get*",
@@ -26,6 +28,11 @@
         "cloudformation:Detect*"
       ],
       "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:PassRole",
+      "Resource": "arn:aws:iam::*:role/BedrockWorkshopExecutionRole"
     }
   ]
 }
