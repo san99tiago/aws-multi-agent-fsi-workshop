@@ -4,8 +4,9 @@
 # Built-in imports
 import os
 import time
-import uuid
 
+# External imports
+from ulid import ULID
 
 # Own imports
 from agents.transactions.generate_transaction_receipt import (
@@ -129,16 +130,16 @@ def action_group_confirm_transaction(parameters):
     )
     logger.info(f"Image created and saved locally as {image_local_path}")
 
+    # Upload the local certificate to an S3 bucket
+    document_id = f"IMG{str(ULID())}"
+
     # Upload the local certificate to an S3 bucket and generate public URL for 10 mins
-    image_receipt_presigned_url = upload_image_to_s3(
+    response = upload_image_to_s3(
         bucket_name=BUCKET_NAME,
         file_path=image_local_path,
-        object_name=f"images/{str(uuid.uuid4())}/bank_receipt.png",
+        object_name=f"images/{document_id}/bank_receipt.png",
     )
+    logger.debug(f"response: {response}")
 
-    logger.debug(
-        image_receipt_presigned_url,
-        message_details="Image receipt URL",
-    )
-
-    return image_receipt_presigned_url
+    logger.info(f"Document ID: {document_id}")
+    return f"Document ID: ##{document_id}##"

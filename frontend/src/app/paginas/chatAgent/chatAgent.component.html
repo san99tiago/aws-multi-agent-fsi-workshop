@@ -1,99 +1,129 @@
-
-  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css'>
-  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/material-design-icons/3.0.1/iconfont/material-icons.min.css'>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/material-design-icons/3.0.1/iconfont/material-icons.min.css"
+/>
 
 <body>
-<!-- partial:index.partial.html -->
-<div class="container-fluid">
-	<div class="row no-gutters" >
-		 <div class="col-md-3 border-right" >
-		<div class="settings-tray" style="background-color:#006161 !important">
-		  <img class="profile-image" src="/chatAgent/fsi2.png" alt="Profile img" style="width:100% !important; object-fit:cover;" >
-		  
-		</div>
-		<div class="search-box">
-		  <div class="input-wrapper">
-			<i class="material-icons">search</i>
-			<input placeholder="Search here" type="text">
-		  </div>
-		</div>
-		<div class="friend-drawer friend-drawer--onhover" (click)="loadNewChat(0)" [ngClass]="{'selectecChat': 0 == actualInx}"  >
-		  <img class="profile-image" src="/chatAgent/bot.png" alt="">
-		  <div class="text">
-			<h6>Peccy Bot</h6>
-			<p class="text-muted">Experto en Servicios Financieros.</p>
-		  </div>
-		</div>
+  <!-- partial:index.partial.html -->
+  <div class="container-fluid">
+    <div class="row no-gutters">
+      <div class="col-md-3 border-right">
+        <div class="settings-tray" style="background-color: #006161 !important">
+          <img
+            class="profile-image"
+            src="/chatAgent/fsi2.png"
+            alt="Profile img"
+            style="width: 100% !important; object-fit: cover"
+          />
+        </div>
+        <div class="search-box">
+          <div class="input-wrapper">
+            <i class="material-icons">search</i>
+            <input placeholder="Search here" type="text" />
+          </div>
+        </div>
+        <div
+          class="friend-drawer friend-drawer--onhover"
+          (click)="loadNewChat(0)"
+          [ngClass]="{ selectecChat: 0 == actualInx }"
+        >
+          <img class="profile-image" src="/chatAgent/bot.png" alt="" />
+          <div class="text">
+            <h6>Ruffy</h6>
+            <p class="text-muted">Experto en Servicios Financieros.</p>
+          </div>
+        </div>
+      </div>
+      <div
+        class="col-md-9 pars"
+        style="background-image: url(/chatAgent/wbColor.png)"
+      >
+        <div class="settings-tray">
+          <div class="friend-drawer no-gutters friend-drawer--grey">
+            <img class="profile-image" src="{{ actualUser.image }}" alt="" />
+            <div class="text">
+              <h6>{{ actualUser.name }}</h6>
+              <p class="text-muted">{{ actualUser.lema }}</p>
+            </div>
+            <span class="settings-tray--right">
+              <i class="material-icons">cached</i>
+              <i class="material-icons">message</i>
+              <i class="material-icons">menu</i>
+            </span>
+          </div>
+        </div>
+        <div class="chat-panel">
+          <ng-container *ngFor="let message of messages">
+            <div class="row no-gutters">
+              <div [ngClass]="message.Style">
+                @if(message.type == 'image'){
+                <div class="chat-bubble chat-bubble--left">
+                  <a href="{{ message.text }}" target="blank"
+                    ><img style="width: 70%" src="{{ message.text }}"
+                  /></a>
+                </div>
 
-		
-	  </div>
-	  <div class="col-md-9 pars" style="background-image:url(/capitan/wbColor.png);">
-		<div class="settings-tray" >
-			<div class="friend-drawer no-gutters friend-drawer--grey" >
-			<img class="profile-image" src="{{actualUser.image}}" alt="">
-			<div class="text">
-			  <h6>{{actualUser.name}}</h6>
-			  <p class="text-muted">{{actualUser.lema}}</p>
-			</div>
-			<span class="settings-tray--right">
-			  <i class="material-icons">cached</i>
-			  <i class="material-icons">message</i>
-			  <i class="material-icons">menu</i>
-			</span>
-		  </div>
-		</div>
-		<div class="chat-panel">
-			<ng-container	*ngFor="let message of messages">
-				<div class="row no-gutters"  >
-				
-					<div [ngClass]="message.Style">
-					  <div  [ngClass]="message.type"  >
-						
-						@if(message.type == 'chat-bubble chat-bubble--left'){
-							<div style="color:#006161; font-weight: bold;"  >{{actualUser.name}}</div>
-							
-						}
-						{{ message.text }}
-					  </div>
-					</div>
+                } @else if(message.type == 'pdf'){
+                <div class="chat-bubble chat-bubble--left">
+                  <a href="{{ message.text }}" target="blank"
+                    ><img style="max-width: 15%" src="/PDF_file.png"
+                  /></a>
+                </div>
+                } @else {
+                <div [ngClass]="message.type">
+                  @if(message.type == 'chat-bubble chat-bubble--left'){
+                  <div style="color: #006161; font-weight: bold">
+                    {{ actualUser.name }}
+                  </div>
 
-				</div>
-			</ng-container>
-		
+                  }
+                  {{ message.text }}
+                </div>
+                }
+              </div>
+            </div>
+          </ng-container>
 
-		  <div class="row">
-			<div class="col-12 ">
-			  <div class="chat-box-tray">
-			  <div class="col-2 ">
-				<i class="material-icons" style="cursor: pointer;">attach_file</i>
-					</div>
-					<div class="col-8 ">
-					<textarea 
-					pInputTextarea
-					id="prompt"
-					rows="2"
-					variant="filled"
-					(keyup.Enter)="onClickSendMessage()" 
-					autoResize="true"
-					placeholder="Type your message here..."
-					[(ngModel)]="prompt"
-					>
-					
-				</textarea>
-</div>
-<div class="col-2 ">
-
-			<i (click)="onClickSendMessage()"  style="cursor: pointer;" class="material-icons">send</i>
-				</div>
-
-			  </div>
-			</div>
-		  </div>
-		</div>
-	  </div>
-	</div>
+          <div class="row">
+            <div class="col-12">
+              <div class="chat-box-tray">
+                <div class="col-2">
+                  <i class="material-icons" style="cursor: pointer"
+                    >attach_file</i
+                  >
+                </div>
+                <div class="col-8">
+                  <textarea
+                    pInputTextarea
+                    id="prompt"
+                    rows="2"
+                    variant="filled"
+                    (keyup.Enter)="onClickSendMessage()"
+                    autoResize="true"
+                    placeholder="Type your message here..."
+                    [(ngModel)]="prompt"
+                  >
+                  </textarea>
+                </div>
+                <div class="col-2">
+                  <i
+                    (click)="onClickSendMessage()"
+                    style="cursor: pointer"
+                    class="material-icons"
+                    >send</i
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-
 </body>
 
 <!--

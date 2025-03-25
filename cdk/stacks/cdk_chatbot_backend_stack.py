@@ -170,6 +170,7 @@ class ChatbotBackendStack(Stack):
             ],
         )
         self.dynamodb_table.grant_read_write_data(self.lambda_chatbot_api)
+        self.bucket_additional_assets.grant_read_write(self.lambda_chatbot_api)
         self.lambda_chatbot_api.role.add_managed_policy(
             aws_iam.ManagedPolicy.from_aws_managed_policy_name(
                 "AmazonSSMReadOnlyAccess",
@@ -425,7 +426,7 @@ class ChatbotBackendStack(Stack):
 
         1. For questions about CERTIFICATES or BANK CERTIFICATES:
             - Use the <GenerateCertificates> tool for Certificates or Bank Certificates.
-            - ONLY return the HTTP presigned URL after executed.
+            - Return the response from tool.
         """
         self.bedrock_agent_2 = aws_bedrock.CfnAgent(
             self,

@@ -1,8 +1,9 @@
 # NOTE: This is a MVP code for demo purposes only. Enhance it to make it production-grade.
 # Built-in imports
 import os
-import uuid
 
+# External imports
+from ulid import ULID
 
 # Own imports
 from common.logger import custom_logger
@@ -42,14 +43,14 @@ def action_group_generate_certificates(parameters):
 
     logger.debug(f"certificate_local_path: {certificate_local_path}")
 
-    # Upload the local certificate to an S3 bucket and generate public URL for 10 mins
-    certificate_url = upload_pdf_to_s3(
+    # Upload the local certificate to an S3 bucket
+    document_id = f"PDF{str(ULID())}"
+    response = upload_pdf_to_s3(
         bucket_name=BUCKET_NAME,
         file_path=certificate_local_path,
-        object_name=f"certificates/{str(uuid.uuid4())}/bank_certificate.pdf",
+        object_name=f"certificates/{document_id}/bank_certificate.pdf",
     )
+    logger.debug(f"response: {response}")
 
-    # TODO: Update to a PRESIGNED-URL!!!
-
-    logger.info(f"Certificate URL: {certificate_url}")
-    return certificate_url
+    logger.info(f"Document ID: {document_id}")
+    return f"Document ID: ##{document_id}##"

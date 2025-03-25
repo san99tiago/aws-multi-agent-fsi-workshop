@@ -17,7 +17,7 @@ def upload_image_to_s3(bucket_name, file_path, object_name=None, expiration=600)
     :param file_path: Path to the IMAGE file to upload.
     :param object_name: The S3 object name. If None, file_path's basename is used.
     :param expiration: Time in seconds for the pre-signed URL to remain valid.
-    :return: The pre-signed URL or an error message.
+    :return: The response for the s3 upload object action.
     """
     try:
         # If no object name is provided, use the file name
@@ -30,7 +30,7 @@ def upload_image_to_s3(bucket_name, file_path, object_name=None, expiration=600)
             mime_type = "application/octet-stream"  # Default MIME type
 
         # Upload the file with the specified MIME type
-        s3_client.upload_file(
+        response = s3_client.upload_file(
             file_path,
             bucket_name,
             object_name,
@@ -38,13 +38,7 @@ def upload_image_to_s3(bucket_name, file_path, object_name=None, expiration=600)
         )
         logger.info(f"File uploaded successfully to {bucket_name}/{object_name}")
 
-        # Generate a pre-signed URL
-        presigned_url = s3_client.generate_presigned_url(
-            "get_object",
-            Params={"Bucket": bucket_name, "Key": object_name},
-            ExpiresIn=expiration,
-        )
-        return presigned_url
+        return response
 
     except FileNotFoundError:
         return "Error: The specified file was not found."
@@ -60,9 +54,5 @@ if __name__ == "__main__":
     file_path = "./temp/image.pdf"
 
     # Call the function to upload the file and generate the URL
-    presigned_url = upload_image_to_s3(bucket_name, file_path)
-
-    if presigned_url.startswith("http"):
-        logger.info("Temporary URL generated:", presigned_url)
-    else:
-        logger.info(presigned_url)
+    response = upload_image_to_s3(bucket_name, file_path)
+    print(response)

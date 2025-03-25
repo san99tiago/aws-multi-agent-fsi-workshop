@@ -1,0 +1,101 @@
+# Built-in imports
+import os
+import boto3
+from typing import Optional
+from uuid import uuid4
+
+# External imports
+from fastapi import APIRouter
+from aws_lambda_powertools import Logger
+
+# Own imports
+from common.logger import custom_logger
+from common.helpers.dynamodb_helper import DynamoDBHelper
+
+
+router = APIRouter()
+logger = custom_logger()
+
+
+# Initialize DynamoDB helper for item's abstraction
+TABLE_NAME = os.environ.get("TABLE_NAME")
+S3_BUCKET_NAME = os.environ.get("S3_BUCKET_NAME")
+ENDPOINT_URL = os.environ.get("ENDPOINT_URL")  # Used for local testing
+dynamodb_helper = DynamoDBHelper(TABLE_NAME, ENDPOINT_URL)
+s3_client = boto3.client("s3")  # TODO: Refactor to dedicated helper
+
+
+class Documents:
+    """Class to define Documents items in a simple fashion."""
+
+    def __init__(self, logger: Optional[Logger] = None) -> None:
+        """
+        :param logger (Optional(Logger)): Logger object.
+        """
+        self.logger = logger
+
+    def get_document_by_id(self, id: str) -> dict:
+        """
+        Method to get a DOCUMENT item by its id.
+        :param id (str): id for a specific DOCUMENT item.
+        """
+        self.logger.info(f"Retrieving DOCUMENT item by id: {id}.")
+
+        # Detect S3 Key based on the ID's prefix
+        if id.startswith("PDF"):
+            s3_key = f"certificates/{id}/bank_certificate.pdf"
+        else:
+            s3_key = f"images/{id}/bank_receipt.png"
+
+        # Generate a pre-signed URL for the S3 Key
+        self.logger.debug(f"Generating pre-signed URL for ORIGINAL S3 Key: {s3_key}")
+        presigned_url = s3_client.generate_presigned_url(
+            "get_object",
+            Params={"Bucket": S3_BUCKET_NAME, "Key": s3_key},
+            ExpiresIn=3600,  # Image URL expires in 1 hour
+        )
+        self.logger.debug(presigned_url, message_details="presigned_url_result")
+
+        # If final asset present, return final asset
+        s3_final_asset_key = result.get("s3_key_final_asset")
+        if s3_final_asset_key:
+            try:
+                # Generate a pre-signed URL for the S3 Key
+                self.logger.debug(
+                    f"Generating pre-signed URL for FINAL S3 Key: {s3_final_asset_key}"
+                )
+                final_asset_presigned_url = s3_client.generate_presigned_url(
+                    "get_object",
+                    Params={"Bucket": S3_BUCKET_NAME, "Key": s3_final_asset_key},
+                    ExpiresIn=3600,  # Image URL expires in 1 hour
+                )
+                self.logger.debug(
+                    final_asset_presigned_url, message_details="presigned_url_result"
+                )
+                result = result | {
+                    "final_asset_presigned_url": final_asset_presigned_url
+                }
+            except Exception as e:
+                self.logger.warning(f"Final asset not found: {e}")
+
+        # Return document item and its corresponding presigned url
+        return result | {"presigned_url": presigned_url}
+
+
+@router.get("/documents/{document_id}", tags=["documents"])
+async def read_document_item(
+    document_id: str,
+    correlation_id: Annotated[str | None, Header()] = uuid4(),
+):
+    try:
+        logger.append_keys(correlation_id=correlation_id)
+        logger.info("Starting documents handler for read_document_item()")
+
+        todo = Documents(logger=logger)
+        result = todo.get_document_by_id(id=document_id)
+        logger.info("Finished read_document_item() successfully")
+        return result
+
+    except Exception as e:
+        logger.error(f"Error in read_document_item(): {e}")
+        raise e

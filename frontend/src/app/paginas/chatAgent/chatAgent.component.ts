@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, ElementRef, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewChecked, Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -28,7 +28,9 @@ class Message {
 enum MessageType {
 	Bot = 'chat-bubble chat-bubble--left',
 	User = 'chat-bubble chat-bubble--right',
-	Loading = 'chat-bubble-load loading'
+	Loading = 'chat-bubble-load loading',
+	BotImg = 'image',
+	BotPdf = 'pdf'
 }
 
 @Component({
@@ -79,7 +81,7 @@ export class ChatAgentComponent implements OnInit, AfterViewChecked {
 			message: ['']
 		});
 
-		this.chats = [{ "name": 'Peccy Bot', "lema": "Go FSI!", "hi": "Soy Peccy Bot, un experto en servicios financieros de AWS. Estoy aquí para ayudarte a revisar tus productos, realizar transacciones, consultar sobre nuevos productos u oportunidades de inversión", "image": "/chatAgent/bot.png" },
+		this.chats = [{ "name": 'Ruffy', "lema": "Go FSI!", "hi": "Soy Ruffy, un experto en servicios financieros de AWS. Estoy aquí para ayudarte a revisar tus productos, realizar transacciones, consultar sobre nuevos productos u oportunidades de inversión", "image": "/chatAgent/bot.png" },
 		]
 
 		this.actualUser = this.chats[0]
@@ -192,17 +194,17 @@ export class ChatAgentComponent implements OnInit, AfterViewChecked {
 			var resp = result.response
 			//this.message = result.messages
 			console.log("mensaje es: ", this.message)
-			var botMessage: Message = { text: resp, type: MessageType.Bot, Style: 'col-md-8' };
-			this.messages.push(botMessage);
-			this.canSendMessage = true;
-			/*console.log(resp.analisis)
-			var botMessage: Message = {text: resp.analisis, type: MessageType.Bot};
-			this.messages.push(botMessage);
 
-			botMessage= {text: resp.listaRecomendaciones, type: MessageType.Bot};
+			// Detect message type (text, Image, PDF, etc...)
+			let mesType = MessageType.Bot
+			if (result.type == "image") mesType = MessageType.BotImg
+			else if (result.type == "pdf") mesType = MessageType.BotPdf
+
+			// Send message to chatbot
+			var botMessage: Message = { text: resp, type: mesType, Style: 'col-md-8' };
 			this.messages.push(botMessage);
 			this.canSendMessage = true;
-			console.log(resp)*/
+
 		}
 		this.loading = false
 

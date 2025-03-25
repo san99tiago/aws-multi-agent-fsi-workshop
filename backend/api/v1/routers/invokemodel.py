@@ -1,17 +1,23 @@
 # Built-in imports
 from uuid import uuid4
+import re
+import os
 
 # External imports
 from fastapi import APIRouter, Request
 
 # Own imports
 from common.logger import custom_logger
+from common.helpers.s3_url_helper import generate_presigned_url
 from api.v1.services.bedrock_agent import call_bedrock_agent
 from api.v1.services.save_message import save_message
 
 
 router = APIRouter()
 logger = custom_logger()
+
+
+BUCKET_NAME = os.environ["BUCKET_NAME"]  # Mandatory to pass S3 Bucket name as env var
 
 
 @router.get("/invokemodel", tags=["Chatbot"])
@@ -65,6 +71,42 @@ async def post_chatbot_invokemodel(
         logger.info(f"Input message to LLM is: {str(text)}")
         response_message = call_bedrock_agent(str(text), from_number)
         logger.info(f"Output message from LLM: {response_message}")
+
+        # Extract the document ID
+        match = re.search(r"##(IMG[\w\d]+)##", response_message)
+        document_id = match.group(1) if match else ""
+        logger.info(f"Document ID: {document_id}")
+
+        # For responses that are images of pdfs, intercept the response
+        # ... and send back only the presigned URL
+        if document_id.startswith("IMG"):
+            logger.debug("Document ID corresponds to an image")
+
+            # Generate presigned-url for the document
+            presigned_url = generate_presigned_url(
+                bucket_name=BUCKET_NAME,
+                object_name=f"images/{document_id}/bank_receipt.png",
+            )
+
+            result = {
+                "type": "image",
+                "success": "true",
+                "response": presigned_url,
+            }
+            return result
+        elif document_id.startswith("PDF"):
+            # Generate presigned-url for the document
+            presigned_url = generate_presigned_url(
+                bucket_name=BUCKET_NAME,
+                object_name=f"certificates/{document_id}/bank_certificate.pdf",
+            )
+
+            result = {
+                "type": "pdf",
+                "success": "true",
+                "response": presigned_url,
+            }
+            return result
 
         # Save output message to storage layer
         save_message_result_output = save_message(
