@@ -72,8 +72,8 @@ async def post_chatbot_invokemodel(
         response_message = call_bedrock_agent(str(text), from_number)
         logger.info(f"Output message from LLM: {response_message}")
 
-        # Extract the document ID
-        match = re.search(r"##(IMG[\w\d]+)##", response_message)
+        # Extract the document ID (will be formatted between hashtags)
+        match = re.search(r"##([\w\d]+)##", response_message)
         document_id = match.group(1) if match else ""
         logger.info(f"Document ID: {document_id}")
 
