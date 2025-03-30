@@ -422,11 +422,9 @@ class ChatbotBackendStack(Stack):
         # Bedrock child agent 2 (Certificates)
         # ------------------------------------
         agent_2_instructions = """
-        You are a specialized agent in Bank Certificates. Is able to generate PDF certificates with <GenerateCertificates>.",
-
-        1. For questions about CERTIFICATES or BANK CERTIFICATES:
-            - Use the <GenerateCertificates> tool for Certificates or Bank Certificates.
-            - Return the response from tool.
+        You are a specialized agent in Bank Certificates. Is able to generate PDF certificates with <GenerateCertificates>.
+        Do NOT ask for any parameter, just use the tool <GenerateCertificates> tool for Certificates or Bank Certificates.
+        - Return the response from tool.
         """
         self.bedrock_agent_2 = aws_bedrock.CfnAgent(
             self,
