@@ -1,16 +1,6 @@
 # AWS-MULTI-AGENT-FSI-WORKSHOP
 
-WORK-IN-PROGRESS!
-
-## Manual Steps (for Workshop)
-
-WIP...
-
-- Model access for Nova Pro V1.
-- Replace SSM Parameter for the correct Supervisor Agent ID.
-- Replace \<FSI_ENDPOINT_REPLACE_ME\> in Source frontend file inside S3 bucket.
-- Create Guardrail.
-- Update Lambda Function with Guardrail ID.
+Workshop and Official Docs: [Multi-Agent Collaboration with Amazon Bedrock: Build the Next-Generation FSI Chatbot](https://catalog.us-east-1.prod.workshops.aws/workshops/86a37a0d-4310-4582-acac-04a0b7eafc83/en-US)
 
 ## LICENSE
 
