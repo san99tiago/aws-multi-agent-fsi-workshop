@@ -1,6 +1,6 @@
 ---
 title: "Pre-Requisitos"
-weight: 21
+weight: 31
 ---
 
 ## Acceso a Modelos de Bedrock 🎇
