@@ -13,13 +13,13 @@ If you want to deploy the workshop at your OWN AWS ACCOUNTS, please proceed to f
 
 1. Click on the following link to deploy the CloudFormation Template, and keep the default values:
 
-- https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create?stackName=fsi-multi-agents-workshop&templateURL=https://lfcarocomdemo.s3.us-east-1.amazonaws.com/fsi-workshop/main.yaml
+- :link[Deploy CloudFormation Template for Workshop]{href="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create?stackName=fsi-multi-agents-workshop&templateURL=https://lfcarocomdemo.s3.us-east-1.amazonaws.com/fsi-workshop/main.yaml"}
 
 ...
 
 Alternative, you can download and inspect the CloudFormation template:
 
-- https://lfcarocomdemo.s3.us-east-1.amazonaws.com/fsi-workshop/main.yaml
+- :link[Download CloudFormation Template YAML]{href="https://lfcarocomdemo.s3.us-east-1.amazonaws.com/fsi-workshop/main.yaml"}
 
 # Important
 

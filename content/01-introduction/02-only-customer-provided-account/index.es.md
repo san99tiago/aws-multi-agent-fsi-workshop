@@ -13,13 +13,13 @@ Estos pasos son solamente en caso de que quisieras crear los recursos en tus pro
 
 1. Click en el siguiente link para desplegar el template de CloudFormation y deja los valores por defecto:
 
-- https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create?stackName=fsi-multi-agents-workshop&templateURL=https://lfcarocomdemo.s3.us-east-1.amazonaws.com/fsi-workshop/main.yaml
+- :link[Deploy CloudFormation Template for Workshop]{href="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create?stackName=fsi-multi-agents-workshop&templateURL=https://lfcarocomdemo.s3.us-east-1.amazonaws.com/fsi-workshop/main.yaml"}
 
 ...
 
 De forma alternativa, podrías descargar la plantilla de CloudFormation aquí:
 
-- https://lfcarocomdemo.s3.us-east-1.amazonaws.com/fsi-workshop/main.yaml
+- :link[Download CloudFormation Template YAML]{href="https://lfcarocomdemo.s3.us-east-1.amazonaws.com/fsi-workshop/main.yaml"}
 
 # Importante
 
