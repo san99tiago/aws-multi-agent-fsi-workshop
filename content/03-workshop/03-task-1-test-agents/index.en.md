@@ -67,7 +67,7 @@ In order to test the agent, go to the Bedrock Playground and ask it questions si
 
 - `Ruffy, what are my bank products?`
 - `Can I see my bank products?`
-- `How much money do I have in my bank?`
+- `How much money do I have in my bank savings?`
 - `Can I open a credit for 10.000?`
 
 Example for testing:
@@ -104,17 +104,16 @@ Agent Capabilities:
 
 - Step 1: Initiate a transaction with the inputs: `key` and `amount`.
 - Step 2: Confirm a transaction based on Step 1.
-- Generate a transaction image receipt for the successful transaction.
+- Generates and ID that the frontend will later render as an image receipt.
 
 In order to test the agent, go to the Bedrock Playground and ask it questions similar to:
 
 - Step 1: `I want to transfer 10 to the key user123`
-- Setp 2: `Confirm transaction`
+- Setp 2: `Confirm`
 
 Example for testing:
 
 ![Agent Transactions](/static/03-images/workshop-agents-09.png)
-![Agent Transactions](/static/03-images/workshop-agents-10.png)
 
 ## Testing Complete!
 

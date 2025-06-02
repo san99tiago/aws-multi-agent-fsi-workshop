@@ -67,8 +67,8 @@ Para probar el agente, ve al Playground de Bedrock y hazle preguntas similares a
 
 - `Ruffy, ¿cuáles son mis productos bancarios?`
 - `¿Puedo ver mis productos bancarios?`
-- `¿Cuánto dinero tengo en mi banco?`
-- `¿Puedo abrir un crédito por 10.000?`
+- `¿Cuánto dinero tengo en mi cuenta de ahorros?`
+- `Abrir un crédito por 10.000`
 
 Ejemplo de prueba:
 
@@ -83,7 +83,8 @@ Procede a acceder al Agente Bedrock para Certificados Bancarios. Aquí puedes ex
 Capacidades del Agente:
 
 - Obtener un Certificado PDF para los Productos Bancarios.
-- Nota: El agente devuelve una URL Pre-firmada de S3 en la versión actual.
+- Nota: El agente devuelve un ID asociado al PDF generado.
+- Este ID será utilizado luego en el frontend para descargar el PDF.
 
 Para probar el agente, ve al Playground de Bedrock y hazle preguntas similares a:
 
@@ -92,7 +93,7 @@ Para probar el agente, ve al Playground de Bedrock y hazle preguntas similares a
 
 Ejemplo de prueba:
 
-![Agent Bank Certificates](/static/03-images/workshop-agents-07.gif)
+![Agent Bank Certificates](/static/03-images/workshop-agents-07.png)
 
 ## Prueba del Agente Bedrock 4 - Transacciones
 
@@ -102,19 +103,18 @@ Procede a acceder al Agente Bedrock para Transacciones. Aquí puedes explorar y 
 
 Capacidades del Agente:
 
-- Paso 1: Iniciar una transacción con los inputs: `key` y `amount`.
+- Paso 1: Iniciar una transacción con los inputs: `llave` y `cantidad`.
 - Paso 2: Confirmar una transacción basada en el Paso 1.
-- Generar un recibo de imagen de la transacción exitosa.
+- Genera un ID que desde el frontend luego se renderizará como una imagen del recibo de transacción.
 
 Para probar el agente, ve al Playground de Bedrock y hazle preguntas similares a:
 
-- Paso 1: `Quiero transferir 10 a la clave ********`
-- Paso 2: `Confirmar transacción`
+- Paso 1: `Quiero transferir hacia llave: san99tiago, cantidad: 15`
+- Paso 2: `Confirmar`
 
 Ejemplo de prueba:
 
 ![Agent Transactions](/static/03-images/workshop-agents-09.png)
-![Agent Transactions](/static/03-images/workshop-agents-10.png)
 
 ## ¡Pruebas Completadas!
 

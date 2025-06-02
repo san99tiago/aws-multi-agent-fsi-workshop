@@ -20,7 +20,10 @@ El primer paso es ir al Servicio Bedrock y hacer clic en "Create Agent". Luego p
 
 Ahora procede a editar/configurar el agente de la siguiente manera:
 
-- Marcar: Create and use a new service role
+- Permisos IAM: Usar un rol existente `BedrockWorkshopExecutionRole`
+
+::alert[Asegúrate de usar el mismo rol para el workshop]{header="Selección del rol importante!" type="warning"}
+
 - Modelo: `Nova Pro - 1.0 - On-demand"
 - Instrucciones:
 
@@ -65,6 +68,10 @@ Dentro de la Edición Multi-Agente, agrega cada uno de los agentes necesarios de
 
 ### Agente de Recompensas
 
+- Agente Colaborador: (Selecciona el que dice `rewards`)
+- Agent Alias: (Selecciona el disponible)
+- Nombre Colaborador: `rewards`
+
 ```txt
 Use the 'rewards' agent for questions about Bank Rewards or Bank Points.
 
@@ -78,11 +85,19 @@ Así es como se ve en la Consola AWS (todos los agentes seguirán el mismo enfoq
 
 ### Agente de Certificados
 
+- Agente Colaborador: (Selecciona el que dice `certificates`)
+- Agent Alias: (Selecciona el disponible)
+- Nombre Colaborador: `certificates`
+
 ```txt
 Use the 'certificates' agent for questions about Certificates and don't require any parameter.
 ```
 
 ### Agente de Productos Financieros
+
+- Agente Colaborador: (Selecciona el que dice `financial-products`)
+- Agent Alias: (Selecciona el disponible)
+- Nombre Colaborador: `financial-products`
 
 ```txt
 Use the 'financial-products' agent for questions about fetching existing products or creating a credit.
@@ -95,6 +110,10 @@ Use the 'financial-products' agent for questions about fetching existing product
 ```
 
 ### Agente de Transacciones
+
+- Agente Colaborador: (Selecciona el que dice `transactions`)
+- Agent Alias: (Selecciona el disponible)
+- Nombre Colaborador: `transactions`
 
 ```txt
 Use the 'transactions' agent for questions about Transactions.
@@ -113,9 +132,17 @@ Use the 'transactions' agent for questions about Transactions.
 
 ### Agente Asistente
 
+- Agente Colaborador: (Selecciona el que dice `assistant-agent`)
+- Agent Alias: (Selecciona el disponible)
+- Nombre Colaborador: `assistant-agent`
+
 ```txt
 Use the 'assistant-agent' agent for questions about Q&A related to Rufus Bank theory, history, directives or any question about Rufus.
 ```
+
+### Último Paso
+
+Procede a seleccionar "Guardar y Salir".
 
 ## Resumen de la Estructura Multi-Agente
 

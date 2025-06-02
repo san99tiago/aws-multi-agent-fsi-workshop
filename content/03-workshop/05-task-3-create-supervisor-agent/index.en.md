@@ -68,6 +68,10 @@ Inside the Multi-Agent Edit, add each of the necessary agents as follows:
 
 ### Rewards Agent
 
+- Collaborator Agent: (Choose the one that says `rewards`)
+- Agent Alias: (Choose available one)
+- Collaborator Name: `rewards`
+
 ```txt
 Use the 'rewards' agent for questions about Bank Rewards or Bank Points.
 
@@ -81,11 +85,19 @@ Here is how this looks in the AWS Console (all agents will be the same approach 
 
 ### Certificates Agent
 
+- Collaborator Agent: (Choose the one that says `certificates`)
+- Agent Alias: (Choose available one)
+- Collaborator Name: `certificates`
+
 ```txt
 Use the 'certificates' agent for questions about Certificates and don't require any parameter.
 ```
 
 ### Financial Products Agent
+
+- Collaborator Agent: (Choose the one that says `financial-products`)
+- Agent Alias: (Choose available one)
+- Collaborator Name: `financial-products`
 
 ```txt
 Use the 'financial-products' agent for questions about fetching existing products or creating a credit.
@@ -98,6 +110,10 @@ Use the 'financial-products' agent for questions about fetching existing product
 ```
 
 ### Transactions Agent
+
+- Collaborator Agent: (Choose the one that says `transactions`)
+- Agent Alias: (Choose available one)
+- Collaborator Name: `transactions`
 
 ```txt
 Use the 'transactions' agent for questions about Transactions.
@@ -116,9 +132,17 @@ Use the 'transactions' agent for questions about Transactions.
 
 ### Assistant Agent
 
+- Collaborator Agent: (Choose the one that says `assistant-agent`)
+- Agent Alias: (Choose available one)
+- Collaborator Name: `assistant-agent`
+
 ```txt
 Use the 'assistant-agent' agent for questions about Q&A related to Rufus Bank theory, history, directives or any question about Rufus.
 ```
+
+### Last Step
+
+Proceed to click on "Save and Exit".
 
 ## Recap of Multi-Agent Structure
 
