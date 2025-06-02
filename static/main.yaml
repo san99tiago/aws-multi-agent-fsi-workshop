@@ -1,3 +1,9 @@
+Description: >
+  This is the main stack that will deploy the FSI Multi Agents Demo.
+  It contains the "backend" and "frontend" stacks with the required
+  Generative AI resources to run the DEMOs. This is not intended for
+  production use, but to showcase the FSI capabilities during AWS events.
+
 Parameters:
   ZipFileWithAssets:
     Type: String
@@ -5,11 +11,13 @@ Parameters:
   AssetsBucketName:
     Description: optional - use only during AWS Event in Workshop Studio
     Type: String
-    Default: "" # ws-event-2009c59b-6c7-us-east-1
+    # Default: "" # ws-event-2009c59b-6c7-us-east-1  # Used for Workshop
+    Default: "lfcarocomdemo"  # Used for Blogpost
   AssetsBucketPrefix:
     Description: optional - use only during AWS Event in Workshop Studio
     Type: String
-    Default: "" # 371c6734-2735-4958-8749-4f4db058a75f/assets/
+    # Default: "" # 371c6734-2735-4958-8749-4f4db058a75f/assets/  # Used for Workshop
+    Default: "fsi-workshop/"  # Used for Blogpost
   LatestAmiId :
     Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
     Default: '/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64'
